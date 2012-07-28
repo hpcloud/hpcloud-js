@@ -1,0 +1,17 @@
+module.exports = {
+  // Identity settings.
+  identity: {
+    endpoint: '',
+    tenantid: '',
+    account: '',
+    secret: '',
+    username: '',
+    password: ''
+  },
+
+  // Object storage settings
+  swift: {
+    container: ''
+  }
+
+};
