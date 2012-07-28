@@ -1,0 +1,16 @@
+{
+  "name": "hpcloud-js",
+  "description": "HP Cloud services",
+  "keywords": ["cloud", "hpcloud", "object storage", "compute"],
+  "version": "0.0.1",
+  "author": "Matt Butcher <matthew.butcher@hp.com>",
+  "contributors": [
+    {"name": "Matt Butcher", "email": "matthew.butcher@hp.com"}
+  ],
+  "repository": "git://github.com/HPCloud/HPCloud-JS",
+  "main": "index",
+  "scripts": {
+    "test": "make test"
+  },
+  "engines": {"node": ">= 0.4.9 < 1.0.0"}
+}
