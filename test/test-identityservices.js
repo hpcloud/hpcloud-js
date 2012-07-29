@@ -13,7 +13,13 @@ var opts = {
   },
   tenantId: conf.identity.tenantid
 }
-idservice.authenticate(opts, function (identity) {
+idservice.authenticate(opts, function (success, identity) {
+
+  if (!success) {
+    console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
+    assert.ok(false);
+    return;
+  }
 
   console.log(identity);
 
