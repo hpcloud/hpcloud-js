@@ -1,5 +1,6 @@
 var assert = require('assert');
 var IdentityServices = require('../lib/identityservices');
+var Identity = require('../lib/identity');
 var conf = require('./config');
 
 assert.notEqual(0, conf.identity.endpoint.length);
@@ -13,6 +14,7 @@ var opts = {
   },
   tenantId: conf.identity.tenantid
 }
+console.log(opts);
 idservice.authenticate(opts, function (success, identity) {
 
   if (!success) {
