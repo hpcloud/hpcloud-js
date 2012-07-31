@@ -11,7 +11,7 @@ This has been developed on Node.js only.
 Authenticating with a username and password:
 
 ```javascript
-require('hpcloud');
+var IdentityServices = require('hpcloud').IdentityServices;
 
 var username = 'me';
 var password = 'secret';
