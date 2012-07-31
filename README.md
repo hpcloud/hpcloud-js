@@ -14,7 +14,7 @@ var endpoint = 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0';
 
 var idService = new IdentityServices(endpoint);
 
-idService.authenticateAsUser(username, password, tenantId, function (identity) {
+idService.authenticateAsUser(username, password, tenantId, function (success, identity) {
   console.log(identity.token());
 });
 ```
