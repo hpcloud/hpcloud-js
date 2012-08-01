@@ -1,5 +1,6 @@
 var assert = require('assert');
 var IdentityServices = require('../lib/identityservices');
+var Identity = require('../lib/identity');
 var conf = require('./config');
 
 assert.notEqual(0, conf.identity.endpoint.length);
@@ -13,6 +14,7 @@ var opts = {
   },
   tenantId: conf.identity.tenantid
 }
+console.log(opts);
 idservice.authenticate(opts, function (success, identity) {
 
   if (!success) {
@@ -36,7 +38,8 @@ idservice.authenticate(opts, function (success, identity) {
  */
 var idservice_testAccountAuth = new IdentityServices(conf.identity.endpoint);
 
-idservice_testAccountAuth.authenticateAsUser(conf.identity.username, conf.identity.password, conf.identity.tenantid, function (success, identity) {
+idservice_testAccountAuth.setTenantId(conf.identity.tenantid);
+idservice_testAccountAuth.authenticateAsUser(conf.identity.username, conf.identity.password, function (success, identity) {
 
   if (!success) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
@@ -59,7 +62,8 @@ idservice_testAccountAuth.authenticateAsUser(conf.identity.username, conf.identi
  */
 var idservice_testUserAuth = new IdentityServices(conf.identity.endpoint);
 
-idservice_testUserAuth.authenticateAsAccount(conf.identity.account, conf.identity.secret, conf.identity.tenantid, function (success, identity) {
+idservice_testUserAuth.setTenantId(conf.identity.tenantid);
+idservice_testUserAuth.authenticateAsAccount(conf.identity.account, conf.identity.secret, function (success, identity) {
 
   if (!success) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
