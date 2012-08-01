@@ -38,8 +38,7 @@ idservice.authenticate(opts, function (success, identity) {
  */
 var idservice_testAccountAuth = new IdentityServices(conf.identity.endpoint);
 
-idservice_testAccountAuth.setTenantId(conf.identity.tenantid);
-idservice_testAccountAuth.authenticateAsUser(conf.identity.username, conf.identity.password, function (success, identity) {
+idservice_testAccountAuth.setTenantId(conf.identity.tenantid).authenticateAsUser(conf.identity.username, conf.identity.password, function (success, identity) {
 
   if (!success) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
@@ -62,8 +61,7 @@ idservice_testAccountAuth.authenticateAsUser(conf.identity.username, conf.identi
  */
 var idservice_testUserAuth = new IdentityServices(conf.identity.endpoint);
 
-idservice_testUserAuth.setTenantId(conf.identity.tenantid);
-idservice_testUserAuth.authenticateAsAccount(conf.identity.account, conf.identity.secret, function (success, identity) {
+idservice_testUserAuth.setTenantId(conf.identity.tenantid).authenticateAsAccount(conf.identity.account, conf.identity.secret, function (success, identity) {
 
   if (!success) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
