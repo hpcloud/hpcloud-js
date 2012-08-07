@@ -33,10 +33,6 @@ idservice.authenticate(opts, function (success, identity) {
   assert.ok(identity.tenantName().length > 0);
   assert.ok(identity.token().length > 0);
 
-  console.log(identity.serviceCatalog());
-  console.log(identity.serviceCatalog()[6]);
-
-
   var region = 'region-a.geo-1';
   assert.equal(region, identity.serviceByName('object-store', region).region);
 
@@ -92,6 +88,8 @@ idservice_testUserAuth
   assert.ok(0 < identity.serviceCatalog().length);
   assert.ok(identity.tenantName().length > 0);
   assert.ok(identity.token().length > 0);
+
+  assert.ok(identity.roles().length > 2);
 });
 
 console.log('Test IdentityServices.rescope().');
