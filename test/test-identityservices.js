@@ -32,6 +32,22 @@ idservice.authenticate(opts, function (success, identity) {
   assert.ok(0 < identity.serviceCatalog().length);
   assert.ok(identity.tenantName().length > 0);
   assert.ok(identity.token().length > 0);
+
+  console.log(identity.serviceCatalog());
+  console.log(identity.serviceCatalog()[6]);
+
+
+  var region = 'region-a.geo-1';
+  assert.equal(region, identity.serviceByName('object-store', region).region);
+
+  region = 'az-2.region-a.geo-1';
+  assert.equal(region, identity.serviceByName('compute', region).region);
+
+  try {
+    assert.fail(identity.serviceByName('No-Such-Service'));
+  } catch (e) {
+    //
+  }
 });
 
 /**
