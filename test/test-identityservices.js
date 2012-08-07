@@ -18,9 +18,9 @@ var opts = {
 }
 
 console.log("Test IdentityServices.authenticate().");
-idservice.authenticate(opts, function (success, identity) {
+idservice.authenticate(opts, function (e, identity) {
 
-  if (!success) {
+  if (e) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
     assert.ok(false);
     return;
@@ -52,9 +52,9 @@ idservice.authenticate(opts, function (success, identity) {
 var idservice_testAccountAuth = new IdentityServices(conf.identity.endpoint);
 
 console.log("Test IdentityServices.authenticateAsUser().");
-idservice_testAccountAuth.setTenantId(conf.identity.tenantid).authenticateAsUser(conf.identity.username, conf.identity.password, function (success, identity) {
+idservice_testAccountAuth.setTenantId(conf.identity.tenantid).authenticateAsUser(conf.identity.username, conf.identity.password, function (e, identity) {
 
-  if (!success) {
+  if (e) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
     assert.ok(false);
     return;
@@ -67,15 +67,21 @@ idservice_testAccountAuth.setTenantId(conf.identity.tenantid).authenticateAsUser
   assert.ok(0 < identity.serviceCatalog().length);
   assert.ok(identity.tenantName().length > 0);
   assert.ok(identity.token().length > 0);
+
+  var idservice_Tenants = new IdentityServices(conf.identity.endpoint);
+
+  idservice_Tenants.tenants(identity, function (e, tenants) {
+    assert.ok(tenants.length > 0);
+  });
 });
 
 console.log("Test IdentityServices.authenticateAsAccount().");
 var idservice_testUserAuth = new IdentityServices(conf.identity.endpoint);
 idservice_testUserAuth
   .setTenantId(conf.identity.tenantid)
-  .authenticateAsAccount(conf.identity.account, conf.identity.secret, function (success, identity) {
+  .authenticateAsAccount(conf.identity.account, conf.identity.secret, function (e, identity) {
 
-  if (!success) {
+  if (e) {
     console.log('Identification failed: %d, %s', arguments[1], arguments[2]);
     assert.ok(false);
     return;
@@ -102,13 +108,13 @@ var rescope_opts = {
   //tenantId: conf.identity.tenantid
 }
 var idservice_rescope = new IdentityServices(conf.identity.endpoint);
-idservice_rescope.authenticate(rescope_opts, function (success, identity) {
+idservice_rescope.authenticate(rescope_opts, function (e, identity) {
 
   // Make sure tenant isn't set already:
   assert.equal(undefined, identity.tenantId());
 
   // Test the rescope.
-  idservice_rescope.setTenantId(conf.identity.tenantid).rescope(identity, function (success, newident){
+  idservice_rescope.setTenantId(conf.identity.tenantid).rescope(identity, function (e, newident){
     //assert.equal(identity.tenantName(), conf.identity.tenantname);
     assert.equal(newident.user().name, conf.identity.username);
     assert.ok(0 < newident.serviceCatalog().length);
