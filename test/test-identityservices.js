@@ -44,6 +44,7 @@ idservice.authenticate(opts, function (e, identity) {
   } catch (e) {
     //
   }
+
 });
 
 /**
