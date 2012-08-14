@@ -12,5 +12,8 @@
   "scripts": {
     "test": "make test"
   },
+  "devDependencies": {
+    "pronto": ">=0.2"
+  }
   "engines": {"node": ">= 0.4.9 < 1.0.0"}
 }
