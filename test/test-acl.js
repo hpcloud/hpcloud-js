@@ -88,8 +88,6 @@ headers[ACL.HEADER_WRITE] = 'testact2, testact3:earnie, .rlistings  ';
 
 acl = ACL.newFromHeaders(headers);
 
-console.log(acl.rules);
-
 assert.equal(ACL.READ, acl.rules[0].mask)
 assert.equal('.example.com', acl.rules[0].host);
 assert.ok(acl.rules[1].rlistings);
