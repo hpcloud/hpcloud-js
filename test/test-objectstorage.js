@@ -53,6 +53,19 @@ reg.route('tests')
       cmd.done();
     });
   })
+  .does(Closure, 'testDecodeContainerMetadata').using('fn', function (cxt, params, cmd) {
+    var test = {
+      'x-container-meta-a': 'a',
+      'x-container-meta-b': 'b',
+      'x-container-meta-some-long-string': 'long value',
+      'x-container-meta-c': 'string'
+    };
+
+    var md = ObjectStorage.ObjectStorage.decodeContainerMetadata(test);
+
+    assert.equal('a', md.a);
+    assert.equal('long value', md['some-long-string']);
+  })
 
   // Create a container.
   .does(Closure, 'testCreateContainer').using('fn', function (cxt, params, cmd) {
@@ -69,6 +82,19 @@ reg.route('tests')
       assert.ok(container.isNew);
       assert.equal(config.swift.container, container.name);
       assert.equal(store.endpoint + '/' + encodeURI(config.swift.container), container.url);
+
+      cmd.done();
+    });
+  })
+
+  // Test account info
+  .does(Closure, 'testAccountInfo').using('fn', function (cxt, params, cmd) {
+    var store = cxt.get('store');
+    store.accountInfo(function (e, data) {
+      console.log(data);
+      assert.ok(data.objects);
+      assert.ok(data.bytes);
+      assert.ok(data.containers);
 
       cmd.done();
     });
