@@ -100,6 +100,43 @@ reg.route('tests')
     });
   })
 
+  .does(Closure, 'testHasContainer').using('fn', function (cxt, params, cmd) {
+    var store = cxt.get('store');
+
+    store.hasContainer(config.swift.container, function (yes) {
+      assert.ok(yes);
+      store.hasContainer('NO_SUCH_CONTAINER', function (yes) {
+        assert.fail(yes);
+        cmd.done();
+      });
+    });
+
+  })
+
+  .does(Closure, 'testContainer').using('fn', function (cxt, prams, cmd) {
+    var store = cxt.get('store');
+
+    store.container(config.swift.container, function (e, container) {
+      if (e) assert.fail(true, "Unexpected error.");
+
+      assert.ok(typeof container == 'Object');
+
+      cmd.done();
+    });
+
+  })
+  .does(Closure, 'testContainers').using('fn', function (cxt, prams, cmd) {
+    var store = cxt.get('store');
+
+    store.containers(function (e, list) {
+      if (e) assert.fail(true, "Unexpected error.");
+
+      assert.ok(list.length > 0);
+      assert.ok(typeof list[0] == 'Object');
+    });
+
+  })
+
   // Delete a container.
   .does(Closure, 'testDeleteContainer').using('fn', function (cxt, params, cmd) {
     var store = cxt.get('store');
