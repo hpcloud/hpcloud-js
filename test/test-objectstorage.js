@@ -17,6 +17,7 @@
 
 var ObjectStorage = require('../lib/objectstorage');
 var ACL = require('../lib/objectstorage/acl');
+var Container = require('../lib/objectstorage/container');
 var IdentityService = require('../lib/identityservices');
 var config = require('./config');
 
@@ -122,9 +123,12 @@ reg.route('tests')
     var store = cxt.get('store');
 
     store.container(config.swift.container, function (e, container) {
-      if (e) assert.fail(true, "Unexpected error.");
+      if (e) {
+        status.failed('Unexpected exception: ' + e.message);
+      }
 
-      assert.ok(typeof container == 'Object');
+      assert.ok(typeof container == 'object');
+      assert.ok(container instanceof Container);
 
       status.passed();
     });
@@ -135,7 +139,7 @@ reg.route('tests')
     var store = cxt.get('store');
 
     store.containers(function (e, list) {
-      if (e) assert.fail(true, "Unexpected error.");
+      if (e) assert.fail(true, "Unexpected error: " + e.message);
 
       assert.ok(list.length > 0);
       assert.ok(typeof list[0] == 'Object');
