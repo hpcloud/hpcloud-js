@@ -135,7 +135,6 @@ reg.route('tests')
 
   })
   .does(Test, 'testContainers').using('fn', function (cxt, prams, status) {
-    console.log('testContainers');
     var store = cxt.get('store');
 
     store.containers(function (e, list) {
