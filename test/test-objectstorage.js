@@ -24,25 +24,26 @@ var config = require('./config');
 var assert = require('assert');
 var pronto = require('pronto');
 var Closure = require('../node_modules/pronto/lib/commands/closure');
+var Test = require('./TestCommand');
 
 var reg = new pronto.Registry();
 reg.route('tests')
+  .does(Test, 'canary').using('fn', function (c, p, status){console.log('Got here'); status.passed()})
 
   // Do authentication.
-  .does(Closure, 'CreateIdentity').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'CreateIdentity').using('fn', function (cxt, params, status) {
     var is = new IdentityService(config.identity.endpoint);
     is
       .setTenantId(config.identity.tenantid)
       .authenticateAsAccount(config.identity.account, config.identity.secret, function (e, i) {
         // Store the identity.
         cxt.add('identity', i);
-        cmd.done();
-                            
+        status.passed();
       });
   })
 
   // Setup object storage.
-  .does(Closure, 'SetupObjectStore').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'SetupObjectStore').using('fn', function (cxt, params, status) {
     // Setup
     var identity = cxt.get('identity');
     var store = ObjectStorage.newFromIdentity(identity, 'region-a.geo-1');
@@ -50,10 +51,10 @@ reg.route('tests')
 
     // Make sure we don't have an old container hanging around.
     store.deleteContainer(config.swift.container, function (e, f) {
-      cmd.done();
+      status.passed();
     });
   })
-  .does(Closure, 'testDecodeContainerMetadata').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'testDecodeContainerMetadata').using('fn', function (cxt, params, status) {
     var test = {
       'x-container-meta-a': 'a',
       'x-container-meta-b': 'b',
@@ -65,10 +66,12 @@ reg.route('tests')
 
     assert.equal('a', md.a);
     assert.equal('long value', md['some-long-string']);
+    status.passed();
   })
 
   // Create a container.
-  .does(Closure, 'testCreateContainer').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'testCreateContainer').using('fn', function (cxt, params, status) {
+    console.log('testCreateContainer');
     var store = cxt.get('store');
     var metadata = {
       'foo': 1,
@@ -83,37 +86,39 @@ reg.route('tests')
       assert.equal(config.swift.container, container.name);
       assert.equal(store.endpoint + '/' + encodeURI(config.swift.container), container.url);
 
-      cmd.done();
+      status.passed();
     });
   })
 
   // Test account info
-  .does(Closure, 'testAccountInfo').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'testAccountInfo').using('fn', function (cxt, params, status) {
+    console.log('testAccountInfo');
     var store = cxt.get('store');
     store.accountInfo(function (e, data) {
-      console.log(data);
       assert.ok(data.objects);
       assert.ok(data.bytes);
       assert.ok(data.containers);
 
-      cmd.done();
+      status.passed();
     });
   })
 
-  .does(Closure, 'testHasContainer').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'testHasContainer').using('fn', function (cxt, params, status) {
+    console.log('testHasContainer');
     var store = cxt.get('store');
 
     store.hasContainer(config.swift.container, function (yes) {
       assert.ok(yes);
       store.hasContainer('NO_SUCH_CONTAINER', function (yes) {
-        assert.fail(yes);
-        cmd.done();
+        assert.ok(yes == false);
+        status.passed();
       });
     });
 
   })
 
-  .does(Closure, 'testContainer').using('fn', function (cxt, prams, cmd) {
+  .does(Test, 'testContainer').using('fn', function (cxt, prams, status) {
+    console.log('testContainer');
     var store = cxt.get('store');
 
     store.container(config.swift.container, function (e, container) {
@@ -121,11 +126,12 @@ reg.route('tests')
 
       assert.ok(typeof container == 'Object');
 
-      cmd.done();
+      status.passed();
     });
 
   })
-  .does(Closure, 'testContainers').using('fn', function (cxt, prams, cmd) {
+  .does(Test, 'testContainers').using('fn', function (cxt, prams, status) {
+    console.log('testContainers');
     var store = cxt.get('store');
 
     store.containers(function (e, list) {
@@ -133,18 +139,20 @@ reg.route('tests')
 
       assert.ok(list.length > 0);
       assert.ok(typeof list[0] == 'Object');
+
+      status.passed();
     });
 
   })
 
   // Delete a container.
-  .does(Closure, 'testDeleteContainer').using('fn', function (cxt, params, cmd) {
+  .does(Test, 'testDeleteContainer').using('fn', function (cxt, params, status) {
     var store = cxt.get('store');
     store.deleteContainer(config.swift.container, function (e, f) {
       if (e) {throw e};
       assert.ok(f);
 
-      cmd.done();
+      status.passed();
     });
 
   })
