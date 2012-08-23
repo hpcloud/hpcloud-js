@@ -72,7 +72,6 @@ reg.route('tests')
 
   // Create a container.
   .does(Test, 'testCreateContainer').using('fn', function (cxt, params, status) {
-    console.log('testCreateContainer');
     var store = cxt.get('store');
     var metadata = {
       'foo': 1,
@@ -84,8 +83,8 @@ reg.route('tests')
     store.createContainer(config.swift.container, acl, metadata, function (e, container) {
       // assert.fail(e);
       assert.ok(container.isNew);
-      assert.equal(config.swift.container, container.name);
-      assert.equal(store.endpoint + '/' + encodeURI(config.swift.container), container.url);
+      assert.equal(config.swift.container, container.name());
+      assert.equal(store.endpoint + '/' + encodeURI(config.swift.container), container.url());
 
       status.passed();
     });
@@ -93,7 +92,6 @@ reg.route('tests')
 
   // Test account info
   .does(Test, 'testAccountInfo').using('fn', function (cxt, params, status) {
-    console.log('testAccountInfo');
     var store = cxt.get('store');
     store.accountInfo(function (e, data) {
       assert.ok(data.objects);
@@ -105,7 +103,6 @@ reg.route('tests')
   })
 
   .does(Test, 'testHasContainer').using('fn', function (cxt, params, status) {
-    console.log('testHasContainer');
     var store = cxt.get('store');
 
     store.hasContainer(config.swift.container, function (yes) {
@@ -119,7 +116,6 @@ reg.route('tests')
   })
 
   .does(Test, 'testContainer').using('fn', function (cxt, prams, status) {
-    console.log('testContainer');
     var store = cxt.get('store');
 
     store.container(config.swift.container, function (e, container) {
@@ -141,8 +137,32 @@ reg.route('tests')
       if (e) assert.fail(true, "Unexpected error: " + e.message);
 
       assert.ok(list.length > 0);
-      assert.ok(typeof list[0] == 'Object');
+      assert.ok(typeof list[0] == 'object');
+      assert.ok(list[0] instanceof Container);
 
+      var myContainer;
+      for (var i =0; i < list.length; ++i) {
+        if (list[i].name() == config.swift.container) {
+          myContainer = list[i];
+          break;
+        }
+      }
+
+      assert.ok(myContainer != undefined);
+
+      status.passed();
+    });
+
+  })
+  .does(Test, 'testContainersWithLimit').using('fn', function (cxt, prams, status) {
+    var store = cxt.get('store');
+
+    store.containers(1, function (e, list) {
+      if (e) assert.fail(true, "Unexpected error: " + e.message);
+
+      assert.ok(list.length = 1);
+      assert.ok(typeof list[0] == 'object');
+      assert.ok(list[0] instanceof Container);
       status.passed();
     });
 
