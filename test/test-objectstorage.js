@@ -63,7 +63,7 @@ reg.route('tests')
       'x-container-meta-c': 'string'
     };
 
-    var md = ObjectStorage.ObjectStorage.decodeContainerMetadata(test);
+    var md = ObjectStorage.Container.decodeMetadata(test);
 
     assert.equal('a', md.a);
     assert.equal('long value', md['some-long-string']);
@@ -165,6 +165,10 @@ reg.route('tests')
       assert.ok(list[0] instanceof Container);
       status.passed();
     });
+
+  })
+  .does(Test, 'testUpdateContainer').using('fn', function (cxt, prams, status) {
+    var store = cxt.get('store');
 
   })
 
