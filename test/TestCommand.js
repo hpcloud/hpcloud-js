@@ -27,8 +27,11 @@ pronto.inheritsCommand(TestCommand);
  */
 TestCommand.prototype.execute = function(context, params) {
   var format = {
+    // Yellow
     status: '\033[00;33m%s\033[0m',
+    // Red
     error: '\033[00;31m%s\033[0m',
+    // Green
     ok: '\033[00;32m%s\033[0m'
   };
 
