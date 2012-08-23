@@ -26,8 +26,14 @@ pronto.inheritsCommand(TestCommand);
  * Failure causes the test chain to stop.
  */
 TestCommand.prototype.execute = function(context, params) {
+  var format = {
+    status: '\033[00;33m%s\033[0m',
+    error: '\033[00;31m%s\033[0m',
+    ok: '\033[00;32m%s\033[0m'
+  };
+
   this.required(params, ['fn']);
-  console.log('==> Running %s', this.name);
+  console.log(format.status, '==> Running ' + this.name);
 
   var fn = params.fn;
   var cmd = this;
@@ -35,12 +41,12 @@ TestCommand.prototype.execute = function(context, params) {
   var result = {
       passed: function (msg) {
         var message = msg || '';
-        console.log('<== Completed test %s. %s', cmd.name, message);
+        console.log(format.ok, '<== Completed test ' + cmd.name + '. ' + message);
         cmd.done();
       },
       failed: function(msg) {
         var message = msg || '';
-        console.log('<<< FAILED test %s. %s', cmd.name, message);
+        console.log(format.error, '<<< FAILED test %s. %s', cmd.name + '. ' + message);
         cmd.end();
       }
   }
