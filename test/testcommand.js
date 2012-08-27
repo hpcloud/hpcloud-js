@@ -32,7 +32,8 @@ TestCommand.prototype.execute = function(context, params) {
     // Red
     error: '\033[00;31m%s\033[0m',
     // Green
-    ok: '\033[00;32m%s\033[0m'
+    ok: '\033[00;32m%s\033[0m',
+    missed: '\033[00;36m%s\033[0m'
   };
 
   this.required(params, ['fn']);
@@ -49,9 +50,15 @@ TestCommand.prototype.execute = function(context, params) {
       },
       failed: function(msg) {
         var message = msg || '';
-        console.log(format.error, '<<< FAILED test %s. %s', cmd.name + '. ' + message);
+        console.log(format.error, '<<< FAILED test ' + cmd.name + '. ' + message);
         cmd.end();
+      },
+      skipped: function(msg) {
+        var message = msg || '';
+        console.log(format.missed, '<<< SKIPPED test ' + cmd.name + '. ' + message);
+        cmd.done();
       }
+
   }
 
   fn(context, params, result);
