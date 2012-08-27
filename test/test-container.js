@@ -109,6 +109,19 @@ reg.route('tests')
     });
 
   })
+  .does(Test, 'testACL').using('fn', function (cxt, params, status) {
+    var v1 = cxt.get('v1');
+    var v2 = cxt.get('v2');
+
+    v1.acl(function (e, acl) {
+      assert.ok(acl.isPrivate());
+      status.passed();
+    });
+    v2.acl(function (e, acl) {
+      assert.ok(acl.isPrivate());
+    });
+  })
+
 
 
 
