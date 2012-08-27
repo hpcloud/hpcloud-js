@@ -113,16 +113,41 @@ reg.route('tests')
     var v1 = cxt.get('v1');
     var v2 = cxt.get('v2');
 
+    console.log(v2);
+
+    // Both of these require a callback, so we nest the tests.
     v1.acl(function (e, acl) {
       assert.ok(acl.isPrivate());
-      status.passed();
-    });
-    v2.acl(function (e, acl) {
-      assert.ok(acl.isPrivate());
+      v2.acl(function (e, acl) {
+        assert.ok(acl.isPrivate());
+        status.passed();
+      });
     });
   })
-
-
+  .does(Test, 'testSave').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testCopy').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testProxyObject').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testRemoteObject').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testObjectsWithPrefix').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testObjectsByPath').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testDeleteObject').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
 
 
   .does(Closure, 'DeleteContainer').using('fn', function (cxt, params, status) {
