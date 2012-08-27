@@ -25,7 +25,7 @@ var config = require('./config');
 var assert = require('assert');
 var pronto = require('pronto');
 var Closure = require('../node_modules/pronto/lib/commands/closure');
-var Test = require('./TestCommand');
+var Test = require('./testcommand');
 
 var reg = new pronto.Registry();
 reg.route('tests')
