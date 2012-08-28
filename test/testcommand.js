@@ -51,7 +51,7 @@ TestCommand.prototype.execute = function(context, params) {
       failed: function(msg) {
         var message = msg || '';
         console.log(format.error, '<<< FAILED test ' + cmd.name + '. ' + message);
-        cmd.end();
+        cmd.stop();
       },
       skipped: function(msg) {
         var message = msg || '';
