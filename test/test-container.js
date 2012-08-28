@@ -3,12 +3,15 @@ var ACL = require('../lib/objectstorage/acl');
 var Container = require('../lib/objectstorage/container');
 var IdentityService = require('../lib/identityservices');
 var config = require('./config');
+var LocalObject = require('../lib/objectstorage/localobject');
 
 // For testing.
 var assert = require('assert');
 var pronto = require('pronto');
 var Closure = require('../node_modules/pronto/lib/commands/closure');
 var Test = require('./testcommand');
+
+var fs = require('fs');
 
 var reg = new pronto.Registry();
 reg.route('tests')
@@ -113,8 +116,6 @@ reg.route('tests')
     var v1 = cxt.get('v1');
     var v2 = cxt.get('v2');
 
-    console.log(v2);
-
     // Both of these require a callback, so we nest the tests.
     v1.acl(function (e, acl) {
       assert.ok(acl.isPrivate());
@@ -125,7 +126,22 @@ reg.route('tests')
     });
   })
   .does(Test, 'testSave').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var container = cxt.get('v2');
+    var name = 'TEST-CONTAINER.js';
+    var f = fs.open('./test-container.js', 'r', function (e, handle) {
+      var o = new LocalObject(name, 'application/javascript');
+      o.setMetadata({'knock-knock': 'whos-there'});
+      o.setDisposition('attachment; filename=foo.js');
+      o.setContent(f);
+
+      container.save(o, function (e) {
+        if (e) {
+          thisTest.failed();
+        }
+        assert.ok(true);
+        thisTest.passed();
+      });
+    });
   })
   .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
@@ -146,7 +162,18 @@ reg.route('tests')
     thisTest.skipped();
   })
   .does(Test, 'testDeleteObject').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var container = cxt.get('v1');
+    container.delete('TEST-CONTAINER.js', function (e, success){
+      if (e) {
+        thisTest.failed();
+        return;
+      }
+      if (!success) {
+        thisTest.failed('Could not delete');
+        return;
+      }
+      thisTest.passed();
+    });
   })
 
 
