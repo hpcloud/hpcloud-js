@@ -128,20 +128,34 @@ reg.route('tests')
   .does(Test, 'testSave').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v2');
     var name = 'TEST-CONTAINER.js';
-    var f = fs.open('./test-container.js', 'r', function (e, handle) {
+    //var handle = fs.createReadStream('./test/test-container.js');
+    var handle = fs.createReadStream('/var/log/dpkg.log');
+
+    Transport.debug = true;
+
+    // When the stream is open, do the test.
+    handle.on('open', function () {
       var o = new LocalObject(name, 'application/javascript');
       o.setMetadata({'knock-knock': 'whos-there'});
       o.setDisposition('attachment; filename=foo.js');
-      o.setContent(f);
+      o.setContent(handle);
 
       container.save(o, function (e) {
         if (e) {
+          console.log(e);
           thisTest.failed();
         }
         assert.ok(true);
         thisTest.passed();
       });
     });
+
+    // If the stream errors out, die.
+    handle.on('error', function (e) {
+      thisTest.failed("Cannot get the file contents.");
+      return;
+    });
+
   })
   .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
