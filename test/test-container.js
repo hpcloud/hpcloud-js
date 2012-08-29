@@ -4,6 +4,8 @@ var Container = require('../lib/objectstorage/container');
 var IdentityService = require('../lib/identityservices');
 var config = require('./config');
 var LocalObject = require('../lib/objectstorage/localobject');
+var ObjectInfo = require('../lib/objectstorage/objectinfo');
+var Subdir= require('../lib/objectstorage/subdir');
 
 // For testing.
 var assert = require('assert');
@@ -67,7 +69,7 @@ reg.route('tests')
       assert.ok(container != undefined);
 
       // The following attributes are set in JSON: name, count, bytes.
-      assert.ok(container.count() == 0);
+      assert.ok(container.count() >= 0);
       assert.ok(container.bytes() >= 0);
       // Duplicate: assert.equal(container.name() == config.swift.container);
 
@@ -83,7 +85,7 @@ reg.route('tests')
       assert.ok(container != undefined);
 
       // The following attributes are set in JSON: name, count, bytes.
-      assert.ok(container.count() == 0);
+      assert.ok(container.count() >= 0);
       assert.ok(container.bytes() >= 0);
       // Duplicate: assert.equal(container.name() == config.swift.container);
 
@@ -128,15 +130,18 @@ reg.route('tests')
   .does(Test, 'testSave').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v2');
     var name = 'TEST-CONTAINER.js';
-    //var handle = fs.createReadStream('./test/test-container.js');
-    var handle = fs.createReadStream('/var/log/dpkg.log');
-
-    Transport.debug = true;
+    var handle = fs.createReadStream('./test/test-container.js');
+    // Test a larger payload.
+    //var handle = fs.createReadStream('/var/log/dpkg.log');
 
     // When the stream is open, do the test.
     handle.on('open', function () {
       var o = new LocalObject(name, 'application/javascript');
-      o.setMetadata({'knock-knock': 'whos-there'});
+      o.setMetadata({
+        'knock-knock': 'whos there',
+        'orange': 'orange who',
+        'orange-you-glad': 'I didnt say banana.'
+      });
       o.setDisposition('attachment; filename=foo.js');
       o.setContent(handle);
 
@@ -157,16 +162,53 @@ reg.route('tests')
     });
 
   })
-  .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+  .does(Test, 'testObjectInfo').using('fn', function (cxt, params, thisTest) {
+    var container = cxt.get('v2');
+    container.objectInfo('TEST-CONTAINER.js', function (e, info) {
+      if(e) {
+        thisTest.failed(e);
+      }
+      console.log(info);
+      assert.equal('application/javascript', info.contentType());
+      assert.equal('TEST-CONTAINER.js', info.name());
+      assert.ok(info.contentLength() > 0);
+      assert.ok(info.eTag().length > 0);
+      assert.ok(info.lastModified().length > 0);
+      thisTest.passed();
+    });
   })
-  .does(Test, 'testCopy').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+  .does(Test, 'testObjects').using('fn', function (cxt, params, thisTest) {
+    var container = cxt.get('v1');
+    container.objects(function (e, list) {
+      assert.ok(list.length > 0);
+      console.log(list);
+
+      var info;
+      for (var i = 0; i < list.length; ++i) {
+        if (list[i].name() == 'TEST-CONTAINER.js') {
+          info = list[i];
+        }
+      }
+      assert.ok(info instanceof ObjectInfo);
+      assert.equal('application/javascript', info.contentType());
+      assert.equal('TEST-CONTAINER.js', info.name());
+      assert.ok(info.contentLength() > 0);
+      assert.ok(info.eTag().length > 0);
+      assert.ok(info.lastModified().length > 0);
+
+      thisTest.passed();
+    });
   })
   .does(Test, 'testProxyObject').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
   .does(Test, 'testRemoteObject').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
+    thisTest.skipped();
+  })
+  .does(Test, 'testCopy').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
   .does(Test, 'testObjectsWithPrefix').using('fn', function (cxt, params, thisTest) {
@@ -176,6 +218,7 @@ reg.route('tests')
     thisTest.skipped();
   })
   .does(Test, 'testDeleteObject').using('fn', function (cxt, params, thisTest) {
+    Transport.debug = true;
     var container = cxt.get('v1');
     container.delete('TEST-CONTAINER.js', function (e, success){
       if (e) {
