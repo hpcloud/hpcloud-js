@@ -165,14 +165,12 @@ reg.route('tests')
     });
 
   })
-  /*
   .does(Test, 'testObjectInfo').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v2');
     container.objectInfo('TEST-CONTAINER.js', function (e, info) {
       if(e) {
         thisTest.failed(e);
       }
-      console.log(info);
       assert.equal('application/javascript', info.contentType());
       assert.equal('TEST-CONTAINER.js', info.name());
       assert.ok(info.contentLength() > 0);
@@ -181,6 +179,7 @@ reg.route('tests')
       thisTest.passed();
     });
   })
+  /*
   .does(Test, 'testObjects').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v1');
     container.objects(function (e, list) {
@@ -207,7 +206,6 @@ reg.route('tests')
   .does(Test, 'testProxyObject').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
-  /*
   .does(Test, 'testRemoteObject').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v1');
 
@@ -226,7 +224,7 @@ reg.route('tests')
 
       var md5 = crypto.createHash('md5');
       obj.on('data', function (chunk) {
-        md5.updateHash(chujnk);
+        md5.update(chunk);
       });
       obj.on('end', function () {
         assert.equal(info.eTag(), md5.digest('hex'));
@@ -237,7 +235,6 @@ reg.route('tests')
 
     });
   })
-  */
   .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
