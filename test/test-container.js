@@ -18,12 +18,14 @@ var fs = require('fs');
 var reg = new pronto.Registry();
 reg.route('tests')
   .does(Closure, 'CreateIdentity').using('fn', function (cxt, params, cmd) {
+    console.log('Setup');
     var is = new IdentityService(config.identity.endpoint);
     is
       .setTenantId(config.identity.tenantid)
       .authenticateAsAccount(config.identity.account, config.identity.secret, function (e, i) {
         // Store the identity.
         cxt.add('identity', i);
+        console.log('Logged into %s as %s', config.identity.endpoint, config.identity.account);
         cmd.done();
       });
   })
@@ -50,8 +52,9 @@ reg.route('tests')
 
     var acl = ACL.makePrivate();
     store.createContainer(config.swift.container, acl, metadata, function (e, container) {
+      console.log('Setup complete. Beginning tests.');
       status.done();
-    })
+    });
   })
   .does(Test, 'testContainerFromJSON').using('fn', function (cxt, params, status) {
     var store = cxt.get('store');
@@ -162,6 +165,7 @@ reg.route('tests')
     });
 
   })
+  /*
   .does(Test, 'testObjectInfo').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v2');
     container.objectInfo('TEST-CONTAINER.js', function (e, info) {
@@ -199,12 +203,41 @@ reg.route('tests')
       thisTest.passed();
     });
   })
+ */
   .does(Test, 'testProxyObject').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
+  /*
   .does(Test, 'testRemoteObject').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var container = cxt.get('v1');
+
+    container.remoteObject('TEST-CONTAINER.js', function (e, obj) {
+      if (e) {
+        thisTest.failed(e);
+        return;
+      }
+      var info = obj.info();
+      assert.ok(info instanceof ObjectInfo);
+      assert.equal('application/javascript', info.contentType());
+      assert.equal('TEST-CONTAINER.js', info.name());
+      assert.ok(info.contentLength() > 0);
+      assert.ok(info.eTag().length > 0);
+      assert.ok(info.lastModified().length > 0);
+
+      var md5 = crypto.createHash('md5');
+      obj.on('data', function (chunk) {
+        md5.updateHash(chujnk);
+      });
+      obj.on('end', function () {
+        assert.equal(info.eTag(), md5.digest('hex'));
+
+        thisTest.passed();
+      });
+
+
+    });
   })
+  */
   .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
     thisTest.skipped();
   })
@@ -235,6 +268,7 @@ reg.route('tests')
 
 
   .does(Closure, 'DeleteContainer').using('fn', function (cxt, params, status) {
+    console.log('Teardown complete.');
     var store = cxt.get('store');
     store.deleteContainer(config.swift.container, function (e, f) {
       if (e) {throw e};
