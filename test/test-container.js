@@ -139,16 +139,16 @@ reg.route('tests')
 
     // When the stream is open, do the test.
     handle.on('open', function () {
-      var o = new LocalObject(name, 'application/javascript');
+      var o = new ObjectInfo(name, 'application/javascript');
       o.setMetadata({
         'knock-knock': 'whos there',
         'orange': 'orange who',
         'orange-you-glad': 'I didnt say banana.'
       });
       o.setDisposition('attachment; filename=foo.js');
-      o.setContent(handle);
+      //o.setContent(handle);
 
-      container.save(o, function (e) {
+      container.save(o, handle, function (e) {
         if (e) {
           console.log(e);
           thisTest.failed();
@@ -164,6 +164,15 @@ reg.route('tests')
       return;
     });
 
+    var o2 = new ObjectInfo('TEST/2.txt', 'text/plain');
+    var o3 = new ObjectInfo('TEST/3.txt', 'text/plain');
+    container.save(o2, 'This is a test.', function (e) {
+      assert.ok(e == false || e == undefined);
+    });
+    container.save(o3, new Buffer('This is a test.'), function (e) {
+      assert.ok(e == false || e == undefined);
+    });
+
   })
   .does(Test, 'testObjectInfo').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v2');
@@ -176,10 +185,11 @@ reg.route('tests')
       assert.ok(info.contentLength() > 0);
       assert.ok(info.eTag().length > 0);
       assert.ok(info.lastModified().length > 0);
+      var md = info.metadata();
+      assert.equal('orange who', md.orange);
       thisTest.passed();
     });
   })
-  /*
   .does(Test, 'testObjects').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v1');
     container.objects(function (e, list) {
@@ -199,12 +209,22 @@ reg.route('tests')
       assert.ok(info.eTag().length > 0);
       assert.ok(info.lastModified().length > 0);
 
+      // Shouldn't be able to get MD on this object.
+      var gotAnError = false;
+      try {
+        info.matadata();
+      }
+      catch (e) {
+        gotAnError = true;
+      }
+      assert.ok(gotAnError);
+
+      // But if I call setMetadata, this should be okay.
+      info.setMetadata({});
+      assert.ok(typeof info.metadata() == 'object');
+
       thisTest.passed();
     });
-  })
- */
-  .does(Test, 'testProxyObject').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
   })
   .does(Test, 'testRemoteObject').using('fn', function (cxt, params, thisTest) {
     var container = cxt.get('v1');
@@ -221,6 +241,9 @@ reg.route('tests')
       assert.ok(info.contentLength() > 0);
       assert.ok(info.eTag().length > 0);
       assert.ok(info.lastModified().length > 0);
+
+      var md = info.metadata();
+      assert.equal('orange who', md.orange);
 
       var md5 = crypto.createHash('md5');
       obj.on('data', function (chunk) {
@@ -242,10 +265,38 @@ reg.route('tests')
     thisTest.skipped();
   })
   .does(Test, 'testObjectsWithPrefix').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var c = cxt.get('v1');
+    c.objectsWithPrefix('TEST-', function  (e, list) {
+      assert.equal(1, list.length);
+      c.objectsWithPrefix('', '/', function  (e, list) {
+        assert.ok(list.length >= 2);
+        var dir;
+        for (var i = 0; i < list.length; ++i) {
+          if (list[i] instanceof Subdir) {
+            dir = list[i];
+            break;
+          }
+        }
+        assert.ok(dir != undefined);
+        assert.equal('TEST/', dir.name());
+        assert.equal('/', dir.delimiter());
+        thisTest.passed();
+      })
+    });
   })
   .does(Test, 'testObjectsByPath').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var c = cxt.get('v1');
+    c.objectsByPath('TEST', function  (e, list) {
+      assert.ok(list.length >= 2);
+      c.objectsByPath('', '/', function (e, list) {
+        // Nothing starts with TEST:
+        for (var i = 0; i < list.length; ++i) {
+          assert.ok(list[i].name().substring('TEST/') != 0);
+        }
+        thisTest.passed();
+      });
+
+    });
   })
   .does(Test, 'testDeleteObject').using('fn', function (cxt, params, thisTest) {
     Transport.debug = true;
@@ -261,6 +312,10 @@ reg.route('tests')
       }
       thisTest.passed();
     });
+
+    // Clean up other files.
+    container.delete('TEST/2.txt', function (e) {});
+    container.delete('TEST/3.txt', function (e) {});
   })
 
 
