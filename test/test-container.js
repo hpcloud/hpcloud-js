@@ -3,7 +3,6 @@ var ACL = require('../lib/objectstorage/acl');
 var Container = require('../lib/objectstorage/container');
 var IdentityService = require('../lib/identityservices');
 var config = require('./config');
-var LocalObject = require('../lib/objectstorage/localobject');
 var ObjectInfo = require('../lib/objectstorage/objectinfo');
 var Subdir= require('../lib/objectstorage/subdir');
 
@@ -194,8 +193,6 @@ reg.route('tests')
     var container = cxt.get('v1');
     container.objects(function (e, list) {
       assert.ok(list.length > 0);
-      console.log(list);
-
       var info;
       for (var i = 0; i < list.length; ++i) {
         if (list[i].name() == 'TEST-CONTAINER.js') {
