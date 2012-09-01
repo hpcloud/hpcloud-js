@@ -256,10 +256,49 @@ reg.route('tests')
     });
   })
   .does(Test, 'testUpdateObjectMetadata').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var container = cxt.get('v2');
+    container.objectInfo('TEST-CONTAINER.js', function (e, info) {
+      var md = info.metadata();
+      // Change one:
+      md['knock-knock'] = 'whodat';
+      // Add one
+      md['test-update'] = 'http://httpcats.herokuapp.com/';
+
+      info.setMetadata(md);
+      container.updateObjectMetadata(info, function (e) {
+        if (e) {
+          thisTest.failed();
+        }
+        else {
+          container.objectInfo('TEST-CONTAINER.js', function (e, info) {
+            var metadata = info.metadata();
+            assert.equal('whodat', metadata['knock-knock']);
+            assert.equal('http://httpcats.herokuapp.com/', metadata['test-update']);
+            thisTest.passed();
+          });
+        }
+      });
+    });
+
   })
   .does(Test, 'testCopy').using('fn', function (cxt, params, thisTest) {
-    thisTest.skipped();
+    var container = cxt.get('v2');
+    container.objectInfo('TEST-CONTAINER.js', function (e, info) {
+      // Verify that we can change the content type.
+      info.setContentType('text/plain');
+      container.copy(info, 'TEST/4.txt', function (e) {
+        if (e) {
+          thisTest.failed('Could not copy');
+          return;
+        }
+        container.objectInfo('TEST/4.txt', function (e, info) {
+          assert.equal('TEST/4.txt', info.name());
+          assert.equal('text/plain', info.contentType());
+          assert.equal('orange who', info.metadata().orange);
+          thisTest.passed();
+        });
+      });
+    });
   })
   .does(Test, 'testObjectsWithPrefix').using('fn', function (cxt, params, thisTest) {
     var c = cxt.get('v1');
@@ -313,6 +352,7 @@ reg.route('tests')
     // Clean up other files.
     container.delete('TEST/2.txt', function (e) {});
     container.delete('TEST/3.txt', function (e) {});
+    container.delete('TEST/4.txt', function (e) {});
   })
 
 
