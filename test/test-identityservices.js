@@ -36,7 +36,7 @@ var opts = {
     secretKey: conf.identity.secret
   },
   tenantId: conf.identity.tenantid
-}
+};
 
 console.log("Test IdentityServices.authenticate().");
 idservice.authenticate(opts, function (e, identity) {
@@ -128,7 +128,7 @@ var rescope_opts = {
     secretKey: conf.identity.secret
   },
   //tenantId: conf.identity.tenantid
-}
+};
 var idservice_rescope = new IdentityServices(conf.identity.endpoint);
 idservice_rescope.authenticate(rescope_opts, function (e, identity) {
 
