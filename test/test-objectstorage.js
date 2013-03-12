@@ -187,10 +187,10 @@ reg.route('tests')
     });
 
   })
-  .does(Test, 'testUpdateContainer').using('fn', function (cxt, prams, status) {
-    var store = cxt.get('store');
+  // .does(Test, 'testUpdateContainer').using('fn', function (cxt, prams, status) {
+  //   var store = cxt.get('store');
 
-  })
+  // })
 
   // Delete a container.
   .does(Test, 'testDeleteContainer').using('fn', function (cxt, params, status) {
