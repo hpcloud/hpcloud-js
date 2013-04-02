@@ -1,0 +1,2482 @@
+{
+    "project": {
+        "name": "HPCloud-JS",
+        "description": "A JavaScript library for node.js to interact with HP Cloud",
+        "version": "0.0.1"
+    },
+    "files": {
+        "lib/objectstorage/acl.js": {
+            "name": "lib/objectstorage/acl.js",
+            "modules": {},
+            "classes": {
+                "ACL": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/objectstorage/container.js": {
+            "name": "lib/objectstorage/container.js",
+            "modules": {},
+            "classes": {
+                "Container": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/objectstorage/index.js": {
+            "name": "lib/objectstorage/index.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/objectstorage/objectinfo.js": {
+            "name": "lib/objectstorage/objectinfo.js",
+            "modules": {},
+            "classes": {
+                "ObjectInfo": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/objectstorage/remoteobject.js": {
+            "name": "lib/objectstorage/remoteobject.js",
+            "modules": {},
+            "classes": {
+                "RemoteObject": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/objectstorage/subdir.js": {
+            "name": "lib/objectstorage/subdir.js",
+            "modules": {},
+            "classes": {
+                "Subdir": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/futil.js": {
+            "name": "lib/futil.js",
+            "modules": {},
+            "classes": {
+                "Futil": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/hpcloud.js": {
+            "name": "lib/hpcloud.js",
+            "modules": {
+                "hpcloud": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/identity.js": {
+            "name": "lib/identity.js",
+            "modules": {},
+            "classes": {
+                "Identity": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/identityservices.js": {
+            "name": "lib/identityservices.js",
+            "modules": {},
+            "classes": {
+                "IdentityServices": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "lib/transport.js": {
+            "name": "lib/transport.js",
+            "modules": {},
+            "classes": {
+                "Transport": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "hpcloud": {
+            "name": "hpcloud",
+            "submodules": {},
+            "classes": {
+                "ACL": 1,
+                "Container": 1,
+                "ObjectInfo": 1,
+                "RemoteObject": 1,
+                "Subdir": 1,
+                "Futil": 1,
+                "Identity": 1,
+                "IdentityServices": 1,
+                "Transport": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "lib/transport.js",
+            "line": 28
+        }
+    },
+    "classes": {
+        "ACL": {
+            "name": "ACL",
+            "shortname": "ACL",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/objectstorage/acl.js",
+            "line": 24,
+            "description": "Construct a new ACL.\n\nBy default, an ACL is set to \"private.\"\n\nEXPERIMENTAL: This is bassed on a feature of Swift that is likely to\nchange. Most of this is based on undocmented features of the API\ndiscovered both in the Python docs and in discussions by various\nmembers of the OpenStack community.\n\nSwift access control rules are broken into two permissions: READ and\nWRITE. Read permissions grant the user the ability to access the file\n(using verbs like GET and HEAD), while WRITE permissions allow any\nmodification operation. WRITE does not imply READ.\n\nIn the current implementation of Swift, access can be assigned based\non two different factors:\n\n- Accounts: Access can be granted to specific accounts, and within\n  those accounts, can be further specified to specific users. See the\n  addAccount() method for details on this.\n- Referrers: Access can be granted based on host names or host name\n  patterns. For example, only subdomains of <tt>*.example.com</tt> may be\n  granted READ access to a particular object.\n\nACLs are transmitted within the HTTP headers for an object or\ncontainer. Two headers are used: X-Container-Read for READ rules, and\nX-Container-Write for WRITE rules. Each header may have a chain of\nrules.\n\nFor a detailed description of the rules for ACL creation,\nsee http://swift.openstack.org/misc.html#acls",
+            "is_constructor": 1
+        },
+        "Container": {
+            "name": "Container",
+            "shortname": "Container",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/objectstorage/container.js",
+            "line": 43,
+            "description": "Create a new container.\n\nWhen a new container is created, no check is done against the server\nto ensure that the container exists. Thus, it is possible to have a\nlocal container object that does not point to a legitimate\nserver-side container.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "token",
+                    "description": "An authentication token.",
+                    "type": "String"
+                },
+                {
+                    "name": "url",
+                    "description": "The URL of the container.",
+                    "type": "String"
+                }
+            ]
+        },
+        "ObjectInfo": {
+            "name": "ObjectInfo",
+            "shortname": "ObjectInfo",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 26,
+            "description": "Build a new ObjectInfo instance.\n\nThis represents the data about an object. It is used under the\nfollowing circumstances:\n\n- SAVING: When creating a new object, you declare the object as\n  ObjectInfo. When saving, you will save with an ObjectInfo and a Stream\n  of data. See Container.save().\n- LISTING: When calling Container.objects(), a list including ObjectInfo\n  items will be returned.\n- FETCHING METADATA: Using Container.objectInfo(), you can get just the\n  info about an object, without downloading the entire object.\n- FETCHING OBJECT: When you fetch the entire object, you will also get\n  the ObjectInfo. See RemoteObject.info().\n- UPATING METADATA: When updating just the metadata on an object, you\n  will supply an ObjectInfo object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the object.",
+                    "type": "String"
+                },
+                {
+                    "name": "contentType",
+                    "description": "(Optional) The type of content, defaults to Application/X-Octet-Stream.",
+                    "type": "String",
+                    "optional": true
+                }
+            ]
+        },
+        "RemoteObject": {
+            "name": "RemoteObject",
+            "shortname": "RemoteObject",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 32,
+            "description": "A Remote Object (from object storage).",
+            "is_constructor": 1,
+            "extends": "Stream",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the object",
+                    "type": "String"
+                },
+                {
+                    "name": "response",
+                    "description": "A HTTP response for an object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Subdir": {
+            "name": "Subdir",
+            "shortname": "Subdir",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/objectstorage/subdir.js",
+            "line": 24,
+            "description": "Representation of object seperators in paths as subdirectories.",
+            "is_constructor": 1
+        },
+        "Futil": {
+            "name": "Futil",
+            "shortname": "Futil",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "file": "lib/futil.js",
+            "line": 25,
+            "description": "Function Utilities",
+            "static": 1
+        },
+        "Identity": {
+            "name": "Identity",
+            "shortname": "Identity",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "namespace": "",
+            "file": "lib/identity.js",
+            "line": 24,
+            "description": "Identity object. Identity objects represent an individual identity from\nIdentity Services.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "jsonObject",
+                    "description": "The JSON respone from Identity Services.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "IdentityServices": {
+            "name": "IdentityServices",
+            "shortname": "IdentityServices",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "namespace": "",
+            "file": "lib/identityservices.js",
+            "line": 31,
+            "description": "Interact with Identity Services (a.k.a. Keystone) for authentication, obtaining\nthe service catalog, etc.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "endpoint",
+                    "description": "An identity services url endpoint.",
+                    "type": "String"
+                }
+            ]
+        },
+        "Transport": {
+            "name": "Transport",
+            "shortname": "Transport",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "hpcloud",
+            "namespace": "",
+            "file": "lib/transport.js",
+            "line": 28,
+            "description": "The transport layer that handles communications with the API endpoints.",
+            "static": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 64,
+            "description": "Read flag.",
+            "itemtype": "property",
+            "name": "READ",
+            "type": "Number",
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 72,
+            "description": "Write flag.",
+            "itemtype": "property",
+            "name": "WRITE",
+            "type": "Number",
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 80,
+            "description": "Read/write flag (shorthand for READ | WRITE).",
+            "itemtype": "property",
+            "name": "READ_WRITE",
+            "type": "Number",
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 88,
+            "description": "Header for read permissions.",
+            "itemtype": "property",
+            "name": "HEADER_READ",
+            "type": "String",
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 96,
+            "description": "Header for write permissions.",
+            "itemtype": "property",
+            "name": "HEADER_WRITE",
+            "type": "String",
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 104,
+            "description": "A factory to create an ACL object with public permissions.",
+            "itemtype": "method",
+            "name": "makePublic",
+            "static": 1,
+            "return": {
+                "description": "An ACL object configured with public access.",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 120,
+            "description": "A factory to create an ACL object with private permissions",
+            "itemtype": "method",
+            "name": "makePrivate",
+            "static": 1,
+            "return": {
+                "description": "An ACL object configured with private access.",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 132,
+            "description": "Parse an ACL rule into a rule object.",
+            "itemtype": "method",
+            "name": "parseRule",
+            "static": 1,
+            "params": [
+                {
+                    "name": "perm",
+                    "description": "One of ACL.READ or ACL.WRITE.",
+                    "type": "Number"
+                },
+                {
+                    "name": "rule",
+                    "description": "A string representation of a rule.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "A rule object.",
+                "type": "Object"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 175,
+            "description": "Build a new ACL object from a header array.\n\nThis will scan headers for expected rules, and parse\nout the results. If no headers are found, the returned\nACL will be private.",
+            "itemtype": "method",
+            "name": "newFromHeaders",
+            "static": 1,
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "The headers array.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "The ACL object.",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 217,
+            "description": "Grant ACL access to an account.\n\nOptionally, a user may be given to further limit access.\n\nThis is used to restrict access to a particular account and, if so\nspecified, a specific user on that account.\n\nIf just an account is given, any user on that account will be\nautomatically granted access.\n\nIf an account and a user is given, only that user of the account is\ngranted access.\n\nIf $user is an array, every user in the array will be granted\naccess under the provided account. That is, for each user in the\narray, an entry of the form \\c account:user will be generated in the\nfinal ACL.\n\nAt this time there does not seem to be a way to grant global write\naccess to an object.",
+            "itemtype": "method",
+            "name": "addAccount",
+            "params": [
+                {
+                    "name": "perm",
+                    "description": "ACL.READ, ACL.WRITE or ACL.READ_WRITE",
+                    "type": "Number"
+                },
+                {
+                    "name": "account",
+                    "description": "The name of the account.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "The name of the user, or optionally an indexed\n  array of user names.",
+                    "type": "String|Array"
+                }
+            ],
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 253,
+            "description": "Allow (or deny) a hostname or host pattern.\n\nIn current Swift implementations, only READ rules can have host\npatterns. WRITE permissions cannot be granted to hostnames.\n\nFormats:\n- Allow any host: '*'\n- Allow exact host: 'www.example.com'\n- Allow hosts in domain: '.example.com'\n- Disallow exact host: '-www.example.com'\n- Disallow hosts in domain: '-.example.com'\n\nNote that a simple minus sign ('-') is illegal, though it seems it\nshould be \"disallow all hosts.\"",
+            "itemtype": "method",
+            "name": "addReferrer",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "perm",
+                    "description": "The permission. One of ACL.READ, ACL.WRITE, ACL.READ_WRITE.",
+                    "type": "Object"
+                },
+                {
+                    "name": "host",
+                    "description": "A host string, as described above.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 280,
+            "description": "Add a rule to the rule set.\n\nThis adds a rule with the given permission to the rule set.",
+            "itemtype": "method",
+            "name": "addRule",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "perm",
+                    "description": "A permission object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "rule",
+                    "description": "A rule.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 298,
+            "description": "Allow hosts with READ permissions to list a container's content.\n\nBy default, granting READ permission on a container does not grant\npermission to list the contents of a container. Setting the\nACL.allowListings() permission will allow matching hosts to also list\nthe contents of a container.\n\nIn the current Swift implementation, there is no mechanism for\nallowing some hosts to get listings, while denying others.",
+            "itemtype": "method",
+            "name": "allowListings",
+            "chainable": 1,
+            "return": {
+                "description": "this",
+                "type": "ACL"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 320,
+            "description": "Get the rules set.",
+            "itemtype": "method",
+            "name": "rules",
+            "return": {
+                "description": "An array of rule objects.",
+                "type": "Array"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 332,
+            "description": "Transform the rule set into HTTP headers.",
+            "itemtype": "method",
+            "name": "headers",
+            "return": {
+                "description": "headers.",
+                "type": "Array"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 370,
+            "description": "Convert a rule to a string.",
+            "itemtype": "method",
+            "name": "ruleToString",
+            "params": [
+                {
+                    "name": "perm",
+                    "description": "The permission type (ACL.WRITE, ACL.READ).",
+                    "type": "Number"
+                },
+                {
+                    "name": "rule",
+                    "description": "The rule object.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "A rule as a string.",
+                "type": "String"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 410,
+            "description": "Check if the ACL marks this private.\n\nThis returns TRUE only if this ACL does not grant any permissions\nat all.",
+            "itemtype": "method",
+            "name": "isPrivate",
+            "return": {
+                "description": "TRUE if this is private (non-public), FALSE if any\n  permissions are granted via this ACL.",
+                "type": "Boolean"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 424,
+            "description": "Check whether this object allows public reading.\n\nThis will return TRUE the ACL allows (a) any host to access\nthe item, and (b) it allows container listings.\n\nThis checks whether the object allows public reading,\nnot whether it is ONLY allowing public reads.\n\nSee ACL.makePublic().",
+            "itemtype": "method",
+            "name": "isPublic",
+            "return": {
+                "description": "TRUE if the ACL allows (a) any host to access the item, and\n  (b) it allows container listings.",
+                "type": "Boolean"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/acl.js",
+            "line": 450,
+            "description": "Convert the ACL (headers) to a string. This is useful for debugging.",
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "The ACL as a string",
+                "type": "String"
+            },
+            "class": "ACL"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 21,
+            "description": "A container holds numerous objects. A single object storage instance\nmay have an indefinite number of containers, and each container may\nhave an indefinite number of objects. However, containers may not\nhave subcontainers.\n\nA container is not a directory. It is closer (to use a file system\nanalogy) to a file system volume.",
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 65,
+            "description": "Construct a new Container from a response.\n\nInternally, this is used to build a new container from HTTP headers.",
+            "itemtype": "method",
+            "name": "newFromResponse",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "response",
+                    "description": "An HTTP response object.",
+                    "type": "HTTPResponse"
+                },
+                {
+                    "name": "token",
+                    "description": "An authentication token.",
+                    "type": "String"
+                },
+                {
+                    "name": "endpoint",
+                    "description": "The URL to the Swift REST endpoint. This is used as\n  the base URL to construct a URL to the container itself.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "A container object.",
+                "type": "Container"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 97,
+            "description": "Create a new Container from JSON data.\n\nThis is used to create a new container object from a JSON response.",
+            "itemtype": "method",
+            "name": "newFromJSON",
+            "static": 1,
+            "params": [
+                {
+                    "name": "json",
+                    "description": "JSON data in the correct format.",
+                    "type": "Object"
+                },
+                {
+                    "name": "token",
+                    "description": "The auth token.",
+                    "type": "String"
+                },
+                {
+                    "name": "url",
+                    "description": "The URL to object storage. This will be modified\n  internally to point to this container.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "A container object.",
+                "type": "Container"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 121,
+            "description": "Get the name of this container.",
+            "itemtype": "method",
+            "name": "name",
+            "return": {
+                "description": "The container name.",
+                "type": "String"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 131,
+            "description": "Get the token used with this container.",
+            "itemtype": "method",
+            "name": "token",
+            "return": {
+                "description": "The token.",
+                "type": "String"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 141,
+            "description": "Get the byte count for this container.\n\nRetrieves the number of bytes this container currently\nconsumes.",
+            "itemtype": "method",
+            "name": "bytes",
+            "return": {
+                "description": "The byte count (an Integer).",
+                "type": "Number"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 154,
+            "description": "Get the number of objects in the container.\n\nThis returns the count of objects currently inside of the container.\nThis is the total number of objects, not the number of objects at the\n\"top level\" of the container.",
+            "itemtype": "method",
+            "name": "count",
+            "return": {
+                "description": "The number of items in the container.",
+                "type": "Number"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 168,
+            "description": "Get the URL of this container.",
+            "itemtype": "method",
+            "name": "url",
+            "return": {
+                "description": "The URL pointing to this container.",
+                "type": "String"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 178,
+            "description": "Get the ACL for the current container.\n\nIn some cases, this will result in a request to the\nremote server.",
+            "itemtype": "method",
+            "name": "acl",
+            "async": 1,
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "The callback, which will receive fn(Error e, ACL acl);",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 200,
+            "description": "Get the metadata for a container.\n\nDepending on how the container was constructed, this may require a\ntrip to the remote server to fetch metadata.",
+            "itemtype": "method",
+            "name": "metadata",
+            "async": 1,
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "The callback, which will receive two parameters:\n  fn(Error e, Object metadata).",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 223,
+            "description": "Set the metadata on the present object.\n\nThis does NOT save the metadata on the remote server.",
+            "itemtype": "method",
+            "name": "setMetadata",
+            "params": [
+                {
+                    "name": "metadata",
+                    "description": "Name/value pairs for metadata. It is recommended\n  that you encode the values prior to putting them here, as the Swift REST\n  docs make no assumptions about how the metadata is encoded or decoded.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 253,
+            "description": "Update the metadata on an object.\n\nThis allows you to update an object's metadata without\nrequiring you to re-post the object's data payload.\n\nAccording to the Swift documentation, this ONLY modifies the arbitrary\nmetadata (See ObjectInfo.setMetadata()). Other info, including content type,\ndisposition, and so on, cannot be changed this way.\n\nIMPORTANT: To change the Content-Type of an object, you can use the\nContainer.copy() method, copying the source to the same destination.",
+            "itemtype": "method",
+            "name": "updateObjectMetadata",
+            "async": 1,
+            "params": [
+                {
+                    "name": "info",
+                    "description": "The local copy of the object that should be updated\n  on the remote server.",
+                    "type": "ObjectInfo"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback. This is called as fn(Error e).",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 292,
+            "description": "Write an object to the remote data store.\n\nImportantly, certain fields on the ObjectInfo are ignored when saving:\n- eTag: This is generated on the fly to ensure accuracy.\n- Content-Length: This is not used, since we send with chunked encoding.",
+            "itemtype": "method",
+            "name": "save",
+            "async": 1,
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "The object to write.",
+                    "type": "ObjectInfo"
+                },
+                {
+                    "name": "content",
+                    "description": "",
+                    "type": "String|Buffer|Stream"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback. fn(Error e, HTTPResponse r)",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 353,
+            "description": "Copy a resource from one path to another, or from one container to another.\n\nThis does a remote-side copy, so the payload is never transferred locally.\n\nAn interesting side effect of copy() is that you can change the metadata of a destination\nobject by supplying alternative metadata during copy. You can also change content type\nand other properties. Since you can copy an object to itself, this is the\ncheapest way to change metadata.\n\nTo do this, provide an ObjectInfo as the first argument. That will then be used to\nset headers and metadata.",
+            "itemtype": "method",
+            "name": "copy",
+            "async": 1,
+            "params": [
+                {
+                    "name": "info",
+                    "description": "The object to copy.",
+                    "type": "ObjectInfo|String"
+                },
+                {
+                    "name": "newName",
+                    "description": "The name of the new object.",
+                    "type": "String"
+                },
+                {
+                    "name": "containerName",
+                    "description": "(Optional) The name of the container to copy to.\n  If none is specified, the present container is used.",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback, called like this: fn(Error e);",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 433,
+            "description": "Get information about an object.\n\nThis includes all of the standard data (name, content type,\ncontent length, eTag/md5, and so on) as well as any \nmetadata that was attaached to the object.\n\nThis does NOT get the object's body. The object() method\nmust be used for that.",
+            "itemtype": "method",
+            "name": "objectInfo",
+            "async": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the object to retrieve.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 469,
+            "description": "Get a RemoteObject instance.\n\nThis fetches an object from object storage.\n\nThe returned object is a stream, and will also have\nan ObjectInfo attached.\n\nImportantly, no processing is done on the returned object. It is passed on\nas-is. No length or etag checking is done. No content type validation is done.\nThe data is not read first and buffered.",
+            "itemtype": "method",
+            "name": "remoteObject",
+            "async": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the object to fetch.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback, called as\n  fn(Error e, RemoteObject o)",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 508,
+            "description": "Query for an object.\n\nSee objects(), objectsWithPrefix(), and objectsByPath() for simpler queries.\n\nThe following params are supported:\n- params.limit: set the maximum number of items returned\n- params.marker: get the next item after the named marker. Marker is an object name.\n- params.prefix: Use prefix/delimiter notation to get a \"subdirectory\" listing.\n- params.delimiter: the delimiter to use to separate directories. Usually '/'.\n- params.path: Use a path prefix to get children on a path.",
+            "itemtype": "method",
+            "name": "objectQuery",
+            "async": 1,
+            "params": [
+                {
+                    "name": "params",
+                    "description": "Any number of paramters, as specified above.",
+                    "type": "Object"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback, executed as fn(Error e, Array list). The\n  Array is a list of ObjectInfo items and (depending on params) Subdir items.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 576,
+            "description": "Query for all the objects based on a limited set of criteria.\n\nThis is a wrapper around objectQuery.",
+            "itemtype": "method",
+            "name": "objects",
+            "async": 1,
+            "params": [
+                {
+                    "name": "limit",
+                    "description": "The number of objects to limit the query to.",
+                    "type": "Number"
+                },
+                {
+                    "name": "marker",
+                    "description": "Get the next item after the marker. A marker is an\n  object name.",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback, executed as fn(Error e, Array list). The\n  Array is a list of ObjectInfo items and (depending on params) Subdir items.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 599,
+            "description": "Retrieve a list of Objects with the given prefix.\n\nObject Storage containers support directory-like organization. To\nget a list of items inside of a particular \"subdirectory\", provide\nthe directory name as a \"prefix\". This will return only objects\nthat begin with that prefix.\n\n(Directory-like behavior is also supported by using \"directory\nmarkers\". See objectsByPath().)\n\nPrefixes\n\nPrefixes are basically substring patterns that are matched against\nfiles on the remote object storage.\n\nWhen a prefix is used, object storage will begin to return not just\nObject instsances, but also Subdir instances. A Subdir is simply a\ncontainer for a \"path name\".\n\nDelimiters\n\nObject Storage (OpenStack Swift) does not have a native concept of\nfiles and directories when it comes to paths. Instead, it merely\nrepresents them and simulates their behavior under specific\ncircumstances.\n\nThe default behavior (when prefixes are used) is to treat the '/'\ncharacter as a delimiter. Thus, when it encounters a name like\nthis: `foo/bar/baz.txt` and the prefix is `foo/`, it will\nparse return a Subdir called `foo/bar`.\n\nSetting `delimiter` will tell the Object Storage server which\ncharacter to parse the filenames on. This means that if you use\ndelimiters other than '/', you need to be very consistent with your\nusage or else you may get surprising results.",
+            "itemtype": "method",
+            "name": "objectsWithPrefix",
+            "async": 1,
+            "params": [
+                {
+                    "name": "prefix",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "delimiter",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "limit",
+                    "description": "",
+                    "type": "Int"
+                },
+                {
+                    "name": "marker",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback will receive fn(Error e, Array list), where\n  the array is a list of ObjectInfo objects.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 653,
+            "description": "Specify a path (subdirectory) to traverse.\n\nOpenStack Swift provides two basic ways to handle directory-like\nstructures. The first is using a prefix (see objectsWithPrefix()).\nThe second is to create directory markers and use a path.\n\nA directory marker is just a file with a name that is\ndirectory-like. You create it exactly as you create any other file.\nTypically, it is 0 bytes long with the content type `application/directory`\n\nUsing objectsByPath() with directory markers will return a list of\nObject instances, some of which are regular files, and some of\nwhich are just empty directory marker files. When creating\ndirectory markers, you may wish to set metadata or content-type\ninformation indicating that they are directory markers.\n\nAt one point, the OpenStack documentation suggested that the path\nmethod was legacy. More recent versions of the documentation no\nlonger indicate this.",
+            "itemtype": "method",
+            "name": "objectsByPath",
+            "async": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "The path to query objects for.",
+                    "type": "String"
+                },
+                {
+                    "name": "delimiter",
+                    "description": "A delimiter used to seperate paths in a directory\n  like structure.",
+                    "type": "String"
+                },
+                {
+                    "name": "limit",
+                    "description": "The number of objects to limit the query to.",
+                    "type": "Number",
+                    "optional": true
+                },
+                {
+                    "name": "marker",
+                    "description": "Get the next item after the marker. A marker is an\n  object name.",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback will receive fn(Error e, Array list), where\n  the array is a list of ObjectInfo objects.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 693,
+            "description": "Delete an object.",
+            "itemtype": "method",
+            "name": "delete",
+            "async": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the object to delete.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback. Called with fn(Error e, boolean status).\n  Errors are returned if the resource could not be found. `status` will\n  be true if the resource was deleted.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 724,
+            "description": "fn(Error, Container);",
+            "itemtype": "method",
+            "name": "fetchDetails",
+            "async": 1,
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "contriner",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 761,
+            "description": "Convert the metadata to headers.",
+            "itemtype": "method",
+            "name": "encodeMetadata",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "metadata",
+                    "description": "An object with key value pairs of metadata.",
+                    "type": "Object"
+                },
+                {
+                    "name": "headers",
+                    "description": "An object with http headers (optional).",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "A headers object with metadata encoded and attached.",
+                "type": "Object"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/container.js",
+            "line": 783,
+            "description": "Decode the http headers meta data into a seperate object containing just the metadata.",
+            "itemtype": "method",
+            "name": "decodeMetadata",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "http headers from a response.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "An object with the metadata.",
+                "type": "Object"
+            },
+            "class": "Container"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 44,
+            "description": "Create a new ObjectStorage instance from an IdentityServices\nIdentity.",
+            "params": [
+                {
+                    "name": "identity!~YUIDOC_LINE~!",
+                    "description": "An identity with a service catalog.",
+                    "type": "Identity"
+                },
+                {
+                    "name": "region!~YUIDOC_LINE~!",
+                    "description": "The availability zone. e.g. 'az-1.region-a.geo-1'. If this is\n  omitted, the first available object storage will be used.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "A callback, which will receive an Error (if applicable) and an\n  ObjectStorage instance.",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 65,
+            "description": "Given an authentication token and an endpoint, create an\nObjectStorage instance.",
+            "params": [
+                {
+                    "name": "authToken!~YUIDOC_LINE~!",
+                    "description": "An authentication token. These typically are supplied by Identity\n  Services.",
+                    "type": "String"
+                },
+                {
+                    "name": "endpoint!~YUIDOC_LINE~!",
+                    "description": "An endpoint base URL.",
+                    "type": "String"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 80,
+            "description": "Get the token.",
+            "return": {
+                "description": "\n  The auth token.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 89,
+            "description": "Get the endpoint URL.",
+            "params": [
+                {
+                    "name": "!~YUIDOC_LINE~!",
+                    "description": "The URL endpoint.",
+                    "type": "String"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 110,
+            "description": "Create a new container.\n\nWhen this is successful, the callback function will receive a\nContainer object. This object will have a flag (container.isNew)\nindicating whether this container was just created (true) or whether\nit existed prior to this call (false).\n\nAttempting to create an already existing container will NOT result in\nan error. It will simply result in container.isNew being set to false.",
+            "params": [
+                {
+                    "name": "name!~YUIDOC_LINE~!",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "acl!~YUIDOC_LINE~!",
+                    "description": "An access control list. If ACL is not set, the default ACL will be\n  private.",
+                    "type": "ACL"
+                },
+                {
+                    "name": "metadata!~YUIDOC_LINE~!",
+                    "description": "An object of name/value metadata pairs.",
+                    "type": "Object"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback, which will be executed as fn(Error, Container). Error\n  will only be set if an error is encountered. Otherwise, a Container\n  object will be returned.",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 163,
+            "description": "Delete a container from the remote object storage.\n\nThis will destroy the container and all of its contents.",
+            "params": [
+                {
+                    "name": "name!~YUIDOC_LINE~!",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback to be executed when the operation is complete. This\n  will be executed as fn(Error, Boolean), where the boolean will be\n  set to 'true' if the container was successfully deleted.",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 193,
+            "description": "Get a list of containers from the remote server.\n\nBy default, this fetches the entire list of containers for the\ngiven account. If you have more than 10,000 containers (who\nwouldn't?), you will need to use `marker` for paging.\n\nIf you want more controlled paging, you can use `limit` to indicate\nthe number of containers returned per page, and `marker` to indicate\nthe last container retrieved.\n\nContainers are ordered. That is, they will always come back in the\nsame order. For that reason, the pager takes `marker` (the name of\nthe last container) as a paging parameter, rather than an offset\nnumber.",
+            "params": [
+                {
+                    "name": "limit",
+                    "description": "(Optional)\n  The maximum number of records to be returned.",
+                    "type": "Int"
+                },
+                {
+                    "name": "marker",
+                    "description": "(Optional)\n  The name of the last entry received.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback. This will receive two parameters: fn(Error e, Array listOfContainers).",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 254,
+            "description": "Check whether a container exists.\n\nThis calls fn() with a single param: a boolean indicating whether the\ncontainer exists (true) or not (false).\n\nThe performance hit for calling hasContainer() is equal ot that of\ncalling container(). In most cases, it's better to just call container().",
+            "params": [
+                {
+                    "name": "name!~YUIDOC_LINE~!",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "This is executed with the single boolean param.",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 279,
+            "description": "Fetch a container by name.\n\nThis retrieves a single Container from object storage.",
+            "params": [
+                {
+                    "name": "name!~YUIDOC_LINE~!",
+                    "description": "The name of the container.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback to be executed. It will receive two arguments:\n  an fn(Error, Container).",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 312,
+            "description": "Update an existing container.\n\nCurrently this is an alias of ObjectStorage.createContainer().\n\nThe present version of the Swift REST API does not distinguish between\ncreating and updating containers. You are advised, however, to update\nusing this method. If the future Swift API changes, this method will\nbe adjusted accordingly.",
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 326,
+            "description": "Change a container's ACL.\n\nCurrently this is an alias of ObjectStorage.createContainer().\n\nThe present version of the Swift REST API does not distinguish between\ncreating and updating containers. You are advised, however, to update\nusing this method. If the future Swift API changes, this method will\nbe adjusted accordingly.",
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 341,
+            "description": "Get information about this container.",
+            "params": [
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback. Callback will receive fn(Error, Object), where Error\n  is only set if an error occurs, and Object will have the following\n  properties:\n  - o.bytes: the total space used.\n  - o.objects: the number of objects.\n  - o.containers: the number of containers.",
+                    "type": "Function"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/index.js",
+            "line": 375,
+            "description": "Internal method for building standard HTTP headers.",
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 21,
+            "description": "Information about an object.",
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 55,
+            "description": "The default content type.",
+            "itemtype": "property",
+            "name": "DEFAULT_CONTENT_TYPE",
+            "type": "String",
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 62,
+            "description": "Create a new ObjectInfo instance from JSON data.",
+            "itemtype": "method",
+            "name": "newFromJSON",
+            "static": 1,
+            "params": [
+                {
+                    "name": "An",
+                    "description": "object from a JSON response.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "A new ObjectInfo object.",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 90,
+            "description": "Create a new ObjectInfo from an HTTP Client Response.",
+            "itemtype": "method",
+            "name": "newFromResponse",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of an object",
+                    "type": "String"
+                },
+                {
+                    "name": "response",
+                    "description": "A HTTP response for an object.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "A new ObjectInfo object.",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 127,
+            "description": "Fetch the metadata from the headers and return them.\n\nThis does not decode the value, since we do not know anyting about the\nvalue's encoding.",
+            "itemtype": "method",
+            "name": "decodeMetadata",
+            "static": 1,
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "The raw headers.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "The metadata name/value pairs.",
+                "type": "Object"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 156,
+            "description": "Set the new name of this object.\n\nNote that this only changes the local copy of the object. An object\nmust be saved before the server copy is changed.",
+            "itemtype": "method",
+            "name": "setName",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The new name.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 172,
+            "description": "Set the metadata for this object.",
+            "itemtype": "method",
+            "name": "setMetadata",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "metadata",
+                    "description": "Name/value pairs to be added as metadata.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 185,
+            "description": "Add a name/value pair to the metadata.\n\nIf this entry exists already, it will be overwritten.",
+            "itemtype": "method",
+            "name": "addMetadatum",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "The value.",
+                    "type": "String"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 198,
+            "description": "Remove a key/value pair from the metadata.\n\nThis will remove a named item if it exists.",
+            "itemtype": "method",
+            "name": "deleteMetadatum",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The metadatum name.",
+                    "type": "String"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 210,
+            "description": "Check whether a value exists.\n\nNULL is treated as false.",
+            "itemtype": "method",
+            "name": "hasMetadatum",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name to search for.",
+                    "type": "String"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 223,
+            "description": "Set the content type (MIME type) of the object.\n\nThe default type is `application/x=octet-stream'. You may\nalso add encoding information, such as `text/html; charset=iso-8859-13`.\nIn fact, any options HTTP allows, you can add.\n\nContent type is neither parsed nor verified before being sent to the remote\nobject storage.",
+            "itemtype": "method",
+            "name": "setContentType",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "contentType",
+                    "description": "The content type.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 243,
+            "description": "Set the ETag value",
+            "itemtype": "method",
+            "name": "setETag",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "md5",
+                    "description": "md5 hash for the etag.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 256,
+            "description": "Set the content length for the object.",
+            "itemtype": "method",
+            "name": "setContentLength",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "bytes",
+                    "description": "Number of bytes of the object content.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 269,
+            "description": "Set the transfer encoding.\n\nNOTE: This is informational, and will not cause any processing. If you\nmark an object as gzipped, it is up to you to do the gzipping.\n\nThis allows you to save, say, a compressed copy of a file and tell\nObject Storage that the file is of type foo/bar, but is encoded\nwith gzip.\n\nCommon encoding types:\n- gzip\n- zip\n- compress\n\nSince object storage does not attempt to decode objects, you can use\nany value your system supports.",
+            "itemtype": "method",
+            "name": "setTransferEncoding",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "encoding",
+                    "description": "The encoding.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 297,
+            "description": "Set the content disposition.\n\nCommonly, this is used to force a user agent to prompt for download instead of\nattempting to display.\n\nExample: `o->setDisposition('attachment; filename=foo.png')`\n\nWhen a disposition is submitted, it will be returned in the object headers\nupon GET request.",
+            "itemtype": "method",
+            "name": "setDisposition",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "disposition",
+                    "description": "The content disposition.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 318,
+            "description": "EXPERT: Set additional headers.\n\nSet additional HTTP headers for Swift. Note, this is not to add to the\nadditional headers but to set them replacing any that already exist.",
+            "itemtype": "method",
+            "name": "setAdditionalHeaders",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "This is a headers object.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 334,
+            "description": "Set the last modified date",
+            "itemtype": "method",
+            "name": "setLastModified",
+            "chainable": 1,
+            "params": [
+                {
+                    "name": "lastmod",
+                    "description": "The date and time the object was last modified.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "this",
+                "type": "ObjectInfo"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 347,
+            "description": "EXPERT: Remove headers from the additional header field.",
+            "itemtype": "method",
+            "name": "removeHeaders",
+            "params": [
+                {
+                    "name": "list",
+                    "description": "A list of header keys to remove from the object headers.",
+                    "type": "Array"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 369,
+            "description": "Get the objects name.",
+            "itemtype": "method",
+            "name": "name",
+            "return": {
+                "description": "The name of the object.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 379,
+            "description": "Get the etag of the object",
+            "itemtype": "method",
+            "name": "eTag",
+            "return": {
+                "description": "The etag of the object. This is a md5 hash.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 389,
+            "description": "Get the content length of the object",
+            "itemtype": "method",
+            "name": "contentLength",
+            "return": {
+                "description": "The length of the content in bytes.",
+                "type": "Number"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 399,
+            "description": "Get the content type of the current object.",
+            "itemtype": "method",
+            "name": "contentType",
+            "return": {
+                "description": "The type of content in the object.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 409,
+            "description": "Get the object's trasport encoding.\n\nThrows Error When the results are partial, and error is thrown.",
+            "itemtype": "method",
+            "name": "transferEncoding",
+            "return": {
+                "description": "The transfer encoding.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 424,
+            "description": "The last modified date",
+            "itemtype": "method",
+            "name": "lastModified",
+            "return": {
+                "description": "The last modified date.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 434,
+            "description": "Get the object's disposition.\n\nThrows Error When the results are partial, and error is thrown.",
+            "itemtype": "method",
+            "name": "disposition",
+            "return": {
+                "description": "The content disposition.",
+                "type": "String"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 449,
+            "description": "Get metadata.\n\nThis will only be available if ObjectInfo.is\n\nThrows Error When the results are partial, and error is thrown.",
+            "itemtype": "method",
+            "name": "metadata",
+            "return": {
+                "description": "An object containting names/values of metadata.",
+                "type": "Object"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 466,
+            "description": "EXPERT: Get any additional headers.",
+            "itemtype": "method",
+            "name": "additionalHeaders",
+            "return": {
+                "description": "Additional headers",
+                "type": "Object"
+            },
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 476,
+            "description": "Merge metadata into a supplied headers object.\n\nHeaders are modified in place.",
+            "itemtype": "method",
+            "name": "mergeMetadataHeaders",
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "The existing headers.",
+                    "type": "Object"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/objectinfo.js",
+            "line": 498,
+            "description": "Merge additional headers into a supplied headers object.\n\nHeaders are modified in place.",
+            "itemtype": "method",
+            "name": "mergeAdditionalHeaders",
+            "params": [
+                {
+                    "name": "headers",
+                    "description": "The existing headers.",
+                    "type": "Object"
+                }
+            ],
+            "class": "ObjectInfo"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 21,
+            "description": "Represents a remote object -- an object retrieved from object storage.\n\nThis is a Readable Stream.",
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 76,
+            "description": "Get the ObjectInfo about this object.",
+            "itemtype": "method",
+            "name": "info",
+            "return": {
+                "description": "The ObjectInfo object associated with the remote object.",
+                "type": "ObjectInfo"
+            },
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 93,
+            "description": "Close the underlying object.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 102,
+            "description": "Send a signal to the underlying communication layer requesting no more data\nbe sent.",
+            "itemtype": "method",
+            "name": "pause",
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 113,
+            "description": "Resumes incoming data.",
+            "itemtype": "method",
+            "name": "resume",
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/remoteobject.js",
+            "line": 125,
+            "description": "Set the encoding for an object.",
+            "itemtype": "method",
+            "name": "setEncoding",
+            "params": [
+                {
+                    "name": "encoding",
+                    "description": "The encoding to use.",
+                    "type": "String"
+                }
+            ],
+            "class": "RemoteObject"
+        },
+        {
+            "file": "lib/objectstorage/subdir.js",
+            "line": 35,
+            "description": "This is for a degree of transparency between Subdir and ObjectInfo objects.",
+            "itemtype": "method",
+            "name": "name",
+            "class": "Subdir"
+        },
+        {
+            "file": "lib/objectstorage/subdir.js",
+            "line": 44,
+            "description": "Alias of name().",
+            "itemtype": "method",
+            "name": "path",
+            "class": "Subdir"
+        },
+        {
+            "file": "lib/objectstorage/subdir.js",
+            "line": 51,
+            "description": "The delimiter used as the directory seperator.",
+            "return": {
+                "description": "The delimiter used as the directory seperator.",
+                "type": "String"
+            },
+            "class": "Subdir"
+        },
+        {
+            "file": "lib/futil.js",
+            "line": 21,
+            "description": "Function utilities.",
+            "class": "Futil"
+        },
+        {
+            "file": "lib/futil.js",
+            "line": 34,
+            "description": "Re-scan an argument list with internal optional arguments and a trailing function.\n\nIt is often considered best to have callback functions listed as the last argument\non a function call. This provides a way of re-setting arguments so that optional\narguments are set to 'undefined' and the function callback is moved to the far right\nof the arguments list.\n\nUsage:",
+            "example": [
+                "\n    function example(a, b, c, callback) {\n        var args = Futil.argsWithFn(arguments, ['a', 'b', 'c', 'callback']);\n\n        console.log(\"a: %s, b: %s, c: %s, callback: %s\", args.a, args.b, args.c, args.callback);\n    }\n\n    // Call like this...\n    example(1, function(){});\n    // Output:\n    // a: 1, b: undefined, c: undefined, callback: function (){}"
+            ],
+            "itemtype": "method",
+            "name": "argsWithFn",
+            "static": 1,
+            "params": [
+                {
+                    "name": "arguments",
+                    "description": "An arguments object for a function.",
+                    "type": "Object"
+                },
+                {
+                    "name": "names",
+                    "description": "The names of all possible arguments associated with the\n  arguments object.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "A new object of arguments.",
+                "type": "Object"
+            },
+            "class": "Futil"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 37,
+            "description": "Get the token.",
+            "itemtype": "method",
+            "name": "token",
+            "return": {
+                "description": "The token.",
+                "type": "String"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 47,
+            "description": "Check if the current token has expired.",
+            "itemtype": "method",
+            "name": "isExpired",
+            "return": {
+                "description": "TRUE if the token as expired and FALSE if still valid.",
+                "type": "Boolean"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 59,
+            "description": "Get the current tenantId.",
+            "itemtype": "method",
+            "name": "tenantId",
+            "return": {
+                "description": "The tenantId.",
+                "type": "String"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 69,
+            "description": "Get the current tenantName.",
+            "itemtype": "method",
+            "name": "tenantName",
+            "return": {
+                "description": "The tenantName.",
+                "type": "String"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 79,
+            "description": "The details around a token including expires, tenant, etc.",
+            "itemtype": "method",
+            "name": "tokenDetails",
+            "return": {
+                "description": "An object with the details about the token.",
+                "type": "Object"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 89,
+            "description": "The catalog of activated services.",
+            "itemtype": "method",
+            "name": "serviceCatalog",
+            "return": {
+                "description": "The service catalog.",
+                "type": "Object"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 99,
+            "description": "Given a service name, get the service endpoint.\n\nThis also takes a zone name.",
+            "itemtype": "method",
+            "name": "serviceByName",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the service, e.g. 'objectStorage' or 'ext:cdn'.",
+                    "type": "String"
+                },
+                {
+                    "name": "region",
+                    "description": "The name of the availability zone, e.g. 'az-1.region-a.geo-1'",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The service record.",
+                "type": "Object"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 141,
+            "description": "Get the user object.",
+            "itemtype": "method",
+            "name": "user",
+            "return": {
+                "description": "The user object.",
+                "type": "Object"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identity.js",
+            "line": 151,
+            "description": "Get the user roles",
+            "itemtype": "method",
+            "name": "roles",
+            "return": {
+                "description": "The roles a user has.",
+                "type": "Array"
+            },
+            "class": "Identity",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 21,
+            "description": "The IdenitytServices implementation.",
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 46,
+            "description": "Set the tenant ID.\n\nOnly one of tenant name and tenant ID should be set.\n\nThis should be done *before* an authentication call.",
+            "chainable": 1,
+            "itemtype": "method",
+            "name": "setTenantId",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "The tenantId to be used.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The current object so this can be used in chaining.",
+                "type": "Object"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 66,
+            "description": "Verify that the CN on the SSL certificate is for IdentityServices.",
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 71,
+            "description": "Get the tenantId.",
+            "itemtype": "method",
+            "name": "tenantId",
+            "return": {
+                "description": "The tenantId.",
+                "type": "String"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 82,
+            "description": "Set the tenant Name.\n\nOnly one of tenant name and tenant ID should be set.\n\nThis should be done *before* an authentication call.",
+            "chainable": 1,
+            "itemtype": "method",
+            "name": "setTenantName",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The tenantName to be used.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The current object so this can be used in chaining.",
+                "type": "Object"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 102,
+            "description": "Get the tenantName.",
+            "itemtype": "method",
+            "name": "tenantName",
+            "return": {
+                "description": "The tenantName.",
+                "type": "String"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 113,
+            "description": "Get the endpoint URL.",
+            "itemtype": "method",
+            "name": "url",
+            "return": {
+                "description": "The endpoint URL to Identity Services.",
+                "type": "String"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 123,
+            "description": "Authenticate to a server.\n\nThis is a raw authentication method. It users ONLY the options passed\nin to authenticate.\n\nThe autheticateAs* methods are recommended.",
+            "itemtype": "method",
+            "name": "authenticate",
+            "async": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "The options to use when authenticating.",
+                    "type": "Object"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback function to execute after authentication. The\n  callback accepts two params. The first is error and contains the error if\n  there is one. If the request was successful the first param is false and\n  the second param is an Identity object.",
+                    "type": "Function"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 157,
+            "description": "Authenticate using user/password.\n\nTo attach to a project (tenant), use setTenantId() or setTenantName()\nfirst.",
+            "itemtype": "method",
+            "name": "authenticateAsUser",
+            "async": 1,
+            "params": [
+                {
+                    "name": "username",
+                    "description": "The username to authenticate with.",
+                    "type": "String"
+                },
+                {
+                    "name": "password",
+                    "description": "The users password associated with the username.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback function to execute after a user authenticates.\n  The callback accepts two params. The first is error and contains the error if\n  there is one. If the request was successful the first param is false and\n  the second param is an Identity object.",
+                    "type": "Function"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 185,
+            "description": "Authenticate using account/secret keys.\n\nTo attach to a project (tenant), use setTenantId() or setTenantName()\nfirst.",
+            "itemtype": "method",
+            "name": "authenticateAsAccount",
+            "async": 1,
+            "params": [
+                {
+                    "name": "account",
+                    "description": "The account to authenticate with.",
+                    "type": "String"
+                },
+                {
+                    "name": "secret",
+                    "description": "The secret key associated with the account.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback function to execute after a user authenticates.\n  The callback accepts two params. The first is error and contains the error if\n  there is one. If the request was successful the first param is false and\n  the second param is an Identity object.",
+                    "type": "Function"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 214,
+            "description": "Rescope a user from one tenant to another.",
+            "itemtype": "method",
+            "name": "rescope",
+            "async": 1,
+            "params": [
+                {
+                    "name": "identity",
+                    "description": "The Identity object",
+                    "type": "Identity"
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback function to execute after rescoping the identity.",
+                    "type": "Function"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 262,
+            "description": "Get the list of tenants for an identity.\n\nA tenant object looks like this:",
+            "itemtype": "method",
+            "name": "tenants",
+            "async": 1,
+            "example": [
+                "\n  {\n    id: 'TENANT_ID',\n    name: 'TENANT NAME',\n    enabled: true,\n    created: TIMESTAMP,\n    updated: TIMESTAMP\n  }"
+            ],
+            "params": [
+                {
+                    "name": "identity",
+                    "description": "An identity object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "fn",
+                    "description": "The callback function. This will be invoked with a list\n  of tenant objects: `fn(error, tenants)`",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "An array of tenant objects.",
+                "type": "Array"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 307,
+            "description": "Verify that the certificate is an HPCloud certificate.\n\nThis verification check was added to double-check for spoofing by a legit certificate.",
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 319,
+            "description": "Do an identity request.\n\n*This is an internal method that should not be called by other methods.*",
+            "itemtype": "method",
+            "name": "$request",
+            "access": "private",
+            "tagname": "",
+            "async": 1,
+            "params": [
+                {
+                    "name": "opts",
+                    "description": "An object with the opts to pass to the transport layer.",
+                    "type": "Object"
+                },
+                {
+                    "name": "body",
+                    "description": "The body of the request. If JSON than in string form.",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback function to execute after the request. The\n  callback accepts two params. The first is error and contains the error if\n  there is one. If the request was successful the first param is false and\n  the second param is an Identity object.",
+                    "type": "Function"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 392,
+            "description": "The basic headers to use when making calls.\n\n*This is an internal method that should not be called by other methods.*",
+            "todo": [
+                "Should this be moved inside the transport layer?"
+            ],
+            "itemtype": "method",
+            "name": "$basicHeaders",
+            "access": "private",
+            "tagname": "",
+            "return": {
+                "description": "An object with the basic headers.",
+                "type": "Object"
+            },
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/identityservices.js",
+            "line": 410,
+            "description": "Attach a tenant to an object. This is a helper method used when authenticating.\n\n*This is an internal method that should not be called by other methods.*",
+            "itemtype": "method",
+            "name": "$tenant",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "The object to attach tenant information to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "IdentityServices",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/transport.js",
+            "line": 38,
+            "description": "Do an HTTPS request.\n\nThis performs a simple HTTPS request, and then\nexecutes the callback, passing the response object into the\ncallback.",
+            "itemtype": "method",
+            "name": "doRequest",
+            "static": 1,
+            "params": [
+                {
+                    "name": "opts",
+                    "description": "An object containing, at minimum, a parsed URL. To\n  create a new opts, use URL.parse(url).",
+                    "type": "Object"
+                },
+                {
+                    "name": "body",
+                    "description": "(Optional) The body of the request.",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "A callback function. This receives an Error (on error),\n  a Response, and (if present) the data as a string.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Transport",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/transport.js",
+            "line": 99,
+            "description": "Perform an HTTP request, but leave the data processing to something else.\n\nThis is useful for requests that result in large payloads, or for any cases\nwhere the response returned needs to be streamed to something else.\n\nObjectStorage is the quintessential use case.\n\nfn(Error e, Stream response);\n\nThis will emit an error when the status code is 400 or above, but it does not manage\nredirects (3XX), 1XX and so on.\n\nIMPORTANT: On errors, the Stream is still passed.",
+            "itemtype": "method",
+            "name": "doUnmanagedRequest",
+            "static": 1,
+            "class": "Transport",
+            "module": "hpcloud"
+        },
+        {
+            "file": "lib/transport.js",
+            "line": 152,
+            "description": "Send large objects with a chunked request.\n\nThis attempts to use HTTP chunked transfer encoding to send large objects\nto object storage.",
+            "params": [
+                {
+                    "name": "opts!~YUIDOC_LINE~!",
+                    "description": "HTTP options.",
+                    "type": "Object"
+                },
+                {
+                    "name": "stream!~YUIDOC_LINE~!",
+                    "description": "A stream, set to read at the first byte that should be sent.",
+                    "type": "ReadableStream"
+                },
+                {
+                    "name": "fn!~YUIDOC_LINE~!",
+                    "description": "The callback, which will receive fn(Error e, HTTPResponse r, {Buffer| String} data, String md5).\n  - e: set if there is an error\n  - r: the response object\n  - data: the body the remote host returned\n  - md5: The checksum of the posted body, used to verify return headers.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Transport",
+            "module": "hpcloud"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/objectstorage/acl.js:280"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " lib/objectstorage/objectinfo.js:449"
+        },
+        {
+            "message": "Missing item type\nA container holds numerous objects. A single object storage instance\nmay have an indefinite number of containers, and each container may\nhave an indefinite number of objects. However, containers may not\nhave subcontainers.\n\nA container is not a directory. It is closer (to use a file system\nanalogy) to a file system volume.",
+            "line": " lib/objectstorage/container.js:21"
+        },
+        {
+            "message": "Missing item type\nCreate a new ObjectStorage instance from an IdentityServices\nIdentity.",
+            "line": " lib/objectstorage/index.js:44"
+        },
+        {
+            "message": "Missing item type\nGiven an authentication token and an endpoint, create an\nObjectStorage instance.",
+            "line": " lib/objectstorage/index.js:65"
+        },
+        {
+            "message": "Missing item type\nGet the token.",
+            "line": " lib/objectstorage/index.js:80"
+        },
+        {
+            "message": "Missing item type\nGet the endpoint URL.",
+            "line": " lib/objectstorage/index.js:89"
+        },
+        {
+            "message": "Missing item type\nCreate a new container.\n\nWhen this is successful, the callback function will receive a\nContainer object. This object will have a flag (container.isNew)\nindicating whether this container was just created (true) or whether\nit existed prior to this call (false).\n\nAttempting to create an already existing container will NOT result in\nan error. It will simply result in container.isNew being set to false.",
+            "line": " lib/objectstorage/index.js:110"
+        },
+        {
+            "message": "Missing item type\nDelete a container from the remote object storage.\n\nThis will destroy the container and all of its contents.",
+            "line": " lib/objectstorage/index.js:163"
+        },
+        {
+            "message": "Missing item type\nGet a list of containers from the remote server.\n\nBy default, this fetches the entire list of containers for the\ngiven account. If you have more than 10,000 containers (who\nwouldn't?), you will need to use `marker` for paging.\n\nIf you want more controlled paging, you can use `limit` to indicate\nthe number of containers returned per page, and `marker` to indicate\nthe last container retrieved.\n\nContainers are ordered. That is, they will always come back in the\nsame order. For that reason, the pager takes `marker` (the name of\nthe last container) as a paging parameter, rather than an offset\nnumber.",
+            "line": " lib/objectstorage/index.js:193"
+        },
+        {
+            "message": "Missing item type\nCheck whether a container exists.\n\nThis calls fn() with a single param: a boolean indicating whether the\ncontainer exists (true) or not (false).\n\nThe performance hit for calling hasContainer() is equal ot that of\ncalling container(). In most cases, it's better to just call container().",
+            "line": " lib/objectstorage/index.js:254"
+        },
+        {
+            "message": "Missing item type\nFetch a container by name.\n\nThis retrieves a single Container from object storage.",
+            "line": " lib/objectstorage/index.js:279"
+        },
+        {
+            "message": "Missing item type\nUpdate an existing container.\n\nCurrently this is an alias of ObjectStorage.createContainer().\n\nThe present version of the Swift REST API does not distinguish between\ncreating and updating containers. You are advised, however, to update\nusing this method. If the future Swift API changes, this method will\nbe adjusted accordingly.",
+            "line": " lib/objectstorage/index.js:312"
+        },
+        {
+            "message": "Missing item type\nChange a container's ACL.\n\nCurrently this is an alias of ObjectStorage.createContainer().\n\nThe present version of the Swift REST API does not distinguish between\ncreating and updating containers. You are advised, however, to update\nusing this method. If the future Swift API changes, this method will\nbe adjusted accordingly.",
+            "line": " lib/objectstorage/index.js:326"
+        },
+        {
+            "message": "Missing item type\nGet information about this container.",
+            "line": " lib/objectstorage/index.js:341"
+        },
+        {
+            "message": "Missing item type\nInternal method for building standard HTTP headers.",
+            "line": " lib/objectstorage/index.js:375"
+        },
+        {
+            "message": "Missing item type\nInformation about an object.",
+            "line": " lib/objectstorage/objectinfo.js:21"
+        },
+        {
+            "message": "Missing item type\nRepresents a remote object -- an object retrieved from object storage.\n\nThis is a Readable Stream.",
+            "line": " lib/objectstorage/remoteobject.js:21"
+        },
+        {
+            "message": "Missing item type\nThe delimiter used as the directory seperator.",
+            "line": " lib/objectstorage/subdir.js:51"
+        },
+        {
+            "message": "Missing item type\nFunction utilities.",
+            "line": " lib/futil.js:21"
+        },
+        {
+            "message": "Missing item type\nThe IdenitytServices implementation.",
+            "line": " lib/identityservices.js:21"
+        },
+        {
+            "message": "Missing item type\nVerify that the CN on the SSL certificate is for IdentityServices.",
+            "line": " lib/identityservices.js:66"
+        },
+        {
+            "message": "Missing item type\nVerify that the certificate is an HPCloud certificate.\n\nThis verification check was added to double-check for spoofing by a legit certificate.",
+            "line": " lib/identityservices.js:307"
+        },
+        {
+            "message": "Missing item type\nSend large objects with a chunked request.\n\nThis attempts to use HTTP chunked transfer encoding to send large objects\nto object storage.",
+            "line": " lib/transport.js:152"
+        }
+    ]
+}

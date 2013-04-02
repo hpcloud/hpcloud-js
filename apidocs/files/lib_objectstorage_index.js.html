@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib&#x2F;objectstorage&#x2F;index.js - HPCloud-JS</title>
+    <link rel="stylesheet" href="assets&#x2F;yui&#x2F;3.8.0&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.ico">
+    <script src="assets&#x2F;yui&#x2F;3.8.0&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1><img src="..&#x2F;assets/hp-cloud-logo.png" title="HPCloud-JS">HPCloud-JS</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/ACL.html">ACL</a></li>
+            
+                <li><a href="..&#x2F;classes/Container.html">Container</a></li>
+            
+                <li><a href="..&#x2F;classes/Futil.html">Futil</a></li>
+            
+                <li><a href="..&#x2F;classes/Identity.html">Identity</a></li>
+            
+                <li><a href="..&#x2F;classes/IdentityServices.html">IdentityServices</a></li>
+            
+                <li><a href="..&#x2F;classes/ObjectInfo.html">ObjectInfo</a></li>
+            
+                <li><a href="..&#x2F;classes/RemoteObject.html">RemoteObject</a></li>
+            
+                <li><a href="..&#x2F;classes/Subdir.html">Subdir</a></li>
+            
+                <li><a href="..&#x2F;classes/Transport.html">Transport</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/hpcloud.html">hpcloud</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: lib&#x2F;objectstorage&#x2F;index.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* ============================================================================
+(c) Copyright 2013 Hewlett-Packard Development Company, L.P.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge,publish, distribute, sublicense, and&#x2F;or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+============================================================================ *&#x2F;
+
+exports.version = &quot;0.1.0&quot;;
+
+var Container = require(&#x27;.&#x2F;container&#x27;);
+
+var URL = require(&#x27;url&#x27;);
+var Util = require(&#x27;util&#x27;);
+var Futil = require(&#x27;..&#x2F;futil&#x27;);
+var ACL = exports.ACL = require(&#x27;.&#x2F;acl&#x27;);
+
+&#x2F;&#x2F; A countainer.
+exports.Container = Container;
+&#x2F;&#x2F; Data about an object.
+exports.ObjectInfo = require(&#x27;.&#x2F;objectinfo&#x27;);
+&#x2F;&#x2F; The whole object.
+exports.RemoteObject = require(&#x27;.&#x2F;remoteobject&#x27;);
+
+&#x2F;&#x2F; Create a new ObjectStorage instance.
+exports.newFromIdentity = newFromIdentity;
+
+&#x2F;&#x2F; The top-level object storage object.
+exports.ObjectStorage = ObjectStorage;
+
+&#x2F;**
+ * Create a new ObjectStorage instance from an IdentityServices
+ * Identity.
+ *
+ * @param {Identity} identity
+ *   An identity with a service catalog.
+ * @param {string} region
+ *   The availability zone. e.g. &#x27;az-1.region-a.geo-1&#x27;. If this is
+ *   omitted, the first available object storage will be used.
+ * @param {Function} fn
+ *   A callback, which will receive an Error (if applicable) and an
+ *   ObjectStorage instance.
+ *&#x2F;
+function newFromIdentity(identity, region) {
+  var service = identity.serviceByName(&#x27;object-store&#x27;, region);
+  var endpoint = service.publicURL;
+  var os = new ObjectStorage(identity.token(), endpoint);
+
+  return os;
+}
+
+&#x2F;**
+ * Given an authentication token and an endpoint, create an
+ * ObjectStorage instance.
+ *
+ * @param {string} authToken
+ *   An authentication token. These typically are supplied by Identity
+ *   Services.
+ * @param {string} endpoint
+ *   An endpoint base URL.
+ *&#x2F;
+function ObjectStorage(authToken, endpoint) {
+  this.token = authToken;
+  this.endpoint = endpoint;
+}
+
+&#x2F;**
+ * Get the token.
+ *
+ * @return {string}
+ *   The auth token.
+ *&#x2F;
+ObjectStorage.prototype.tokens = function () {
+  return this.token;
+}
+&#x2F;**
+ * Get the endpoint URL.
+ *
+ * @param {string}
+ *  The URL endpoint.
+ *&#x2F;
+ObjectStorage.prototype.url = function () {
+  return this.endpoint;
+}
+
+ObjectStorage.prototype.useCDN = function (cdn) {
+  throw new Error(&#x27;useCDN is not implemented.&#x27;);
+}
+ObjectStorage.prototype.hasCDN = function (name) {
+  throw new Error(&#x27;hasCDN is not implemented.&#x27;);
+}
+ObjectStorage.prototype.cdnUrl = function (name, useSSL) {
+  throw new Error(&#x27;cdnUrl is not implemented.&#x27;);
+}
+
+
+&#x2F;**
+ * Create a new container.
+ *
+ * When this is successful, the callback function will receive a
+ * Container object. This object will have a flag (container.isNew)
+ * indicating whether this container was just created (true) or whether
+ * it existed prior to this call (false).
+ *
+ * Attempting to create an already existing container will NOT result in
+ * an error. It will simply result in container.isNew being set to false.
+ *
+ * @param {string} name
+ *   The name of the container.
+ * @param {ACL} acl
+ *   An access control list. If ACL is not set, the default ACL will be
+ *   private.
+ * @param {object} metadata
+ *   An object of name&#x2F;value metadata pairs.
+ * @param {Function} fn
+ *   The callback, which will be executed as fn(Error, Container). Error
+ *   will only be set if an error is encountered. Otherwise, a Container
+ *   object will be returned.
+ *&#x2F;
+ObjectStorage.prototype.createContainer = function (name, acl, metadata, fn) {
+
+  if (!acl) {
+    acl = new ACL();
+  }
+
+  var url = this.endpoint + &#x27;&#x2F;&#x27; + encodeURI(name);
+  var token = this.token;
+  var opts = URL.parse(url);
+  opts.method = &#x27;PUT&#x27;;
+  opts.headers = this.standardHeaders();
+
+  &#x2F;&#x2F; Encode the metadata as container metadata.
+  &#x2F;&#x2F;ObjectStorage.encodeContainerMetadata(metadata, opts.headers);
+  Container.encodeMetadata(metadata, opts.headers);
+
+  &#x2F;&#x2F; Do the request.
+  Transport.doRequest(opts, null, function (error, response, data) {
+    if (error) {
+      fn(error);
+      return;
+    }
+
+    var container = new Container(name, token, url);
+    container.isNew = response.statusCode == 201;
+
+    fn(false, container);
+  });
+  
+}
+&#x2F;**
+ * Delete a container from the remote object storage.
+ *
+ * This will destroy the container and all of its contents.
+ *
+ * @param {String} name
+ *   The name of the container.
+ * @param {Function} fn
+ *   The callback to be executed when the operation is complete. This
+ *   will be executed as fn(Error, Boolean), where the boolean will be
+ *   set to &#x27;true&#x27; if the container was successfully deleted.
+ *&#x2F;
+ObjectStorage.prototype.deleteContainer = function (containerName, fn) {
+  var url = this.endpoint + &#x27;&#x2F;&#x27; + encodeURI(containerName);
+  var opts = URL.parse(url);
+  opts.method = &#x27;DELETE&#x27;;
+  opts.headers = this.standardHeaders();
+
+  Transport.doRequest(opts, null, function (error, response, data) {
+    if (error) {
+      fn(error, false);
+      return;
+    }
+
+    var deleted = response.statusCode == 204;
+    fn (false, deleted);
+    return;
+  });
+}
+
+&#x2F;**
+ * Get a list of containers from the remote server.
+ *
+ * By default, this fetches the entire list of containers for the
+ * given account. If you have more than 10,000 containers (who
+ * wouldn&#x27;t?), you will need to use &#x60;marker&#x60; for paging.
+ *
+ * If you want more controlled paging, you can use &#x60;limit&#x60; to indicate
+ * the number of containers returned per page, and &#x60;marker&#x60; to indicate
+ * the last container retrieved.
+ *
+ * Containers are ordered. That is, they will always come back in the
+ * same order. For that reason, the pager takes &#x60;marker&#x60; (the name of
+ * the last container) as a paging parameter, rather than an offset
+ * number.
+ *
+ * @param {int} limit (Optional)
+ *   The maximum number of records to be returned.
+ * @param {String} marker (Optional)
+ *   The name of the last entry received.
+ * @param {Function} fn
+ *   The callback. This will receive two parameters: fn(Error e, Array listOfContainers).
+ *&#x2F;
+ObjectStorage.prototype.containers = function (limit, marker, fn) {
+
+  &#x2F;&#x2F; Handle optional params.
+  var a = Futil.argsWithFn(arguments, [&#x27;limit&#x27;, &#x27;marker&#x27;, &#x27;fn&#x27;])
+  limit = a.limit;
+  marker = a.marker;
+  fn = a.fn;
+
+  var url = this.url() + &#x27;?format=json&#x27;;
+  if (a.limit) {
+    url += &#x27;&amp;limit=&#x27; + encodeURIComponent(a.limit);
+  }
+  if (a.marker) {
+    url += &#x27;&amp;marker=&#x27; + encodeURIComponent(a.marker);
+  }
+
+  var opts = URL.parse(url);
+  opts.method = &#x27;GET&#x27;;
+  opts.headers = this.standardHeaders();
+
+  var token = this.token;
+  var url = this.url();
+
+  Transport.doRequest(opts, function (error, response, data) {
+    if (error) {
+      fn(error);
+      return;
+    }
+
+    var list = [];
+    var containerArray = JSON.parse(data);
+    for (var i = 0; i &lt; containerArray.length; ++i) {
+      list.push(Container.newFromJSON(containerArray[i], token, url));
+    }
+    fn(false, list);
+  });
+}
+
+&#x2F;**
+ * Check whether a container exists.
+ *
+ * This calls fn() with a single param: a boolean indicating whether the
+ * container exists (true) or not (false).
+ *
+ * The performance hit for calling hasContainer() is equal ot that of
+ * calling container(). In most cases, it&#x27;s better to just call container().
+ *
+ * @param {String} name
+ *   The name of the container.
+ * @param {Function} fn
+ *   This is executed with the single boolean param.
+ *&#x2F;
+ObjectStorage.prototype.hasContainer = function (name, fn) {
+  this.container(name, function (e, c) {
+    &#x2F;&#x2F; If there is an error or no container, return false.
+    if (e) {
+      fn(false);
+      return;
+    }
+    fn(true);
+  });
+}
+
+&#x2F;**
+ * Fetch a container by name.
+ *
+ * This retrieves a single Container from object storage.
+ *
+ * @param {String} name
+ *   The name of the container.
+ * @param {Function} fn
+ *   The callback to be executed. It will receive two arguments:
+ *   an fn(Error, Container).
+ *&#x2F;
+ObjectStorage.prototype.container = function (name, fn) {
+  var opts = URL.parse(this.url() + &#x27;&#x2F;&#x27; + encodeURI(name));
+  opts.method = &#x27;HEAD&#x27;;
+  opts.headers = this.standardHeaders();
+
+  var token = this.token;
+  var url = this.url();
+
+  Transport.doRequest(opts, null, function (error, response, data) {
+    if (error) {
+      fn(error);
+      return;
+    }
+
+    var container = Container.newFromResponse(name, response, token, url);
+
+    fn(false, container);
+
+  });
+
+}
+
+&#x2F;**
+ * Update an existing container.
+ *
+ * Currently this is an alias of ObjectStorage.createContainer().
+ *
+ * The present version of the Swift REST API does not distinguish between
+ * creating and updating containers. You are advised, however, to update
+ * using this method. If the future Swift API changes, this method will
+ * be adjusted accordingly.
+ *&#x2F;
+ObjectStorage.prototype.updateContainer = function (name, acl, metadata, fn) {
+  this.createContainer(name, acl, metadata, fn);
+}
+
+&#x2F;**
+ * Change a container&#x27;s ACL.
+ *
+ * Currently this is an alias of ObjectStorage.createContainer().
+ *
+ * The present version of the Swift REST API does not distinguish between
+ * creating and updating containers. You are advised, however, to update
+ * using this method. If the future Swift API changes, this method will
+ * be adjusted accordingly.
+ *&#x2F;
+ObjectStorage.prototype.changeContainerACL = function (containerName, acl, fn) {
+  var metadata;
+  this.createContainer(name, acl, metadata, fn);
+}
+
+&#x2F;**
+ * Get information about this container.
+ *
+ * @param {Function} fn
+ *   The callback. Callback will receive fn(Error, Object), where Error
+ *   is only set if an error occurs, and Object will have the following
+ *   properties:
+ *   - o.bytes: the total space used.
+ *   - o.objects: the number of objects.
+ *   - o.containers: the number of containers.
+ *&#x2F;
+ObjectStorage.prototype.accountInfo = function (fn) {
+  var opts = URL.parse(this.url());
+  opts.method = &#x27;HEAD&#x27;;
+  opts.headers = this.standardHeaders();
+
+  Transport.doRequest(opts, null, function (error, response, data) {
+    if (error) {
+      fn(error);
+      return;
+    }
+
+    var results = {
+      bytes:      response.headers[&#x27;x-account-bytes-used&#x27;],
+      containers: response.headers[&#x27;x-account-container-count&#x27;],
+      objects:    response.headers[&#x27;x-account-object-count&#x27;]
+    }
+
+    fn(false, results);
+  });
+
+
+}
+
+&#x2F;**
+ * Internal method for building standard HTTP headers.
+ *&#x2F;
+ObjectStorage.prototype.standardHeaders = function () {
+  return {
+    &#x27;X-Auth-Token&#x27;: this.token
+  };
+}
+
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

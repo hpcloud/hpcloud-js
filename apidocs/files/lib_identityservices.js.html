@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib&#x2F;identityservices.js - HPCloud-JS</title>
+    <link rel="stylesheet" href="assets&#x2F;yui&#x2F;3.8.0&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.ico">
+    <script src="assets&#x2F;yui&#x2F;3.8.0&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1><img src="..&#x2F;assets/hp-cloud-logo.png" title="HPCloud-JS">HPCloud-JS</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/ACL.html">ACL</a></li>
+            
+                <li><a href="..&#x2F;classes/Container.html">Container</a></li>
+            
+                <li><a href="..&#x2F;classes/Futil.html">Futil</a></li>
+            
+                <li><a href="..&#x2F;classes/Identity.html">Identity</a></li>
+            
+                <li><a href="..&#x2F;classes/IdentityServices.html">IdentityServices</a></li>
+            
+                <li><a href="..&#x2F;classes/ObjectInfo.html">ObjectInfo</a></li>
+            
+                <li><a href="..&#x2F;classes/RemoteObject.html">RemoteObject</a></li>
+            
+                <li><a href="..&#x2F;classes/Subdir.html">Subdir</a></li>
+            
+                <li><a href="..&#x2F;classes/Transport.html">Transport</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/hpcloud.html">hpcloud</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: lib&#x2F;identityservices.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* ============================================================================
+(c) Copyright 2013 Hewlett-Packard Development Company, L.P.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge,publish, distribute, sublicense, and&#x2F;or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+============================================================================ *&#x2F;
+&#x2F;**
+ * The IdenitytServices implementation.
+ *&#x2F;
+var URL = require(&#x27;url&#x27;);
+var HTTP = require(&#x27;https&#x27;);
+var Identity = require(&#x27;.&#x2F;identity&#x27;);
+var Transport = require(&#x27;.&#x2F;transport&#x27;);
+
+module.exports = IdentityServices;
+
+&#x2F;**
+ * Interact with Identity Services (a.k.a. Keystone) for authentication, obtaining
+ * the service catalog, etc.
+ * 
+ * @class IdentityServices
+ * @constructor
+ *
+ * @param {String} endpoint An identity services url endpoint.
+ *&#x2F;
+function IdentityServices(endpoint) {
+  this.endpoint= endpoint;
+  this.tenantName = null;
+  this.tenantId = null;
+}
+
+&#x2F;**
+ * Set the tenant ID.
+ *
+ * Only one of tenant name and tenant ID should be set.
+ *
+ * This should be done *before* an authentication call.
+ *
+ * @chainable
+ * @method setTenantId
+ *
+ * @param {String} id The tenantId to be used.
+ *
+ * @return {Object} The current object so this can be used in chaining.
+ *&#x2F;
+IdentityServices.prototype.setTenantId = function (id) {
+  this.tenantId = id;
+
+  return this;
+};
+
+&#x2F;**
+ * Verify that the CN on the SSL certificate is for IdentityServices.
+ *&#x2F;
+IdentityServices.prototype.verifyCN = true;
+
+&#x2F;**
+ * Get the tenantId.
+ *
+ * @method tenantId
+ * 
+ * @return {String} The tenantId.
+ *&#x2F;
+IdentityServices.prototype.tenantId = function () {
+  return this.tenantId;
+};
+
+&#x2F;**
+ * Set the tenant Name.
+ *
+ * Only one of tenant name and tenant ID should be set.
+ *
+ * This should be done *before* an authentication call.
+ *
+ * @chainable
+ * @method setTenantName
+ *
+ * @param {String} name The tenantName to be used.
+ *
+ * @return {Object} The current object so this can be used in chaining.
+ *&#x2F;
+IdentityServices.prototype.setTenantName = function (name) {
+  this.tenantName = name;
+
+  return this;
+};
+
+&#x2F;**
+ * Get the tenantName.
+ *
+ * @method tenantName
+ * 
+ * @return {String} The tenantName.
+ *&#x2F;
+IdentityServices.prototype.tenantName = function () {
+  return this.tenantName;
+};
+
+&#x2F;**
+ * Get the endpoint URL.
+ *
+ * @method url
+ * @return {String} The endpoint URL to Identity Services.
+ *&#x2F;
+IdentityServices.prototype.url= function () {
+  return this.endpoint;
+};
+
+&#x2F;**
+ * Authenticate to a server.
+ *
+ * This is a raw authentication method. It users ONLY the options passed
+ * in to authenticate.
+ *
+ * The autheticateAs* methods are recommended.
+ *
+ * @method authenticate
+ * @async
+ *
+ * @param {Object} options The options to use when authenticating.
+ * @param {Function} fn The callback function to execute after authentication. The
+ *   callback accepts two params. The first is error and contains the error if
+ *   there is one. If the request was successful the first param is false and
+ *   the second param is an Identity object.
+ *&#x2F;
+IdentityServices.prototype.authenticate = function (options, fn) {
+  var url = this.endpoint + &#x27;&#x2F;tokens&#x27;;
+  var envelope = {
+    auth: options
+  };
+
+  var body = JSON.stringify(envelope);
+
+  &#x2F;&#x2F; Build the HTTP request options.
+  var opts = URL.parse(url);
+  opts.method = &#x27;POST&#x27;;
+  opts.headers = this.$basicHeaders();
+  opts.headers[&#x27;Content-Length&#x27;] = body.length;
+
+  this.$request(opts, body, fn);
+};
+
+&#x2F;**
+ * Authenticate using user&#x2F;password.
+ *
+ * To attach to a project (tenant), use setTenantId() or setTenantName()
+ * first.
+ *
+ * @method authenticateAsUser
+ * @async
+ *
+ * @param {String} username The username to authenticate with.
+ * @param {String} password The users password associated with the username.
+ * @param {Function} fn A callback function to execute after a user authenticates.
+ *   The callback accepts two params. The first is error and contains the error if
+ *   there is one. If the request was successful the first param is false and
+ *   the second param is an Identity object.
+ *&#x2F;
+IdentityServices.prototype.authenticateAsUser = function (user, password, fn) {
+  var obj = {
+    passwordCredentials: {
+      username: user,
+      password: password
+    }
+  };
+  this.$tenant(obj);
+
+  return this.authenticate(obj, fn);
+};
+
+&#x2F;**
+ * Authenticate using account&#x2F;secret keys.
+ *
+ * To attach to a project (tenant), use setTenantId() or setTenantName()
+ * first.
+ *
+ * @method authenticateAsAccount
+ * @async
+ *
+ * @param {String} account The account to authenticate with.
+ * @param {String} secret The secret key associated with the account.
+ * @param {Function} fn A callback function to execute after a user authenticates.
+ *   The callback accepts two params. The first is error and contains the error if
+ *   there is one. If the request was successful the first param is false and
+ *   the second param is an Identity object.
+ *&#x2F;
+IdentityServices.prototype.authenticateAsAccount = function (account, secret, fn) {
+  var obj = {
+    apiAccessKeyCredentials: {
+      accessKey: account,
+      secretKey: secret
+    }
+  };
+
+  this.$tenant(obj);
+
+  return this.authenticate(obj, fn);
+};
+
+&#x2F;**
+ * Rescope a user from one tenant to another.
+ *
+ * @method rescope
+ * @async
+ *
+ * @param {Identity} identity The Identity object
+ * @param {Function} fn A callback function to execute after rescoping the identity.
+ *&#x2F;
+IdentityServices.prototype.rescope = function (identity, fn) {
+  var url = this.endpoint + &#x27;&#x2F;tokens&#x27;;
+
+  &#x2F;&#x2F; Get the token value.
+  var token;
+  if (typeof identity == &#x27;string&#x27;) {
+    token = identity;
+  }
+  else {
+    token = identity.token();
+  }
+
+  var obj = {
+    auth: {
+      token: {
+        id: token
+      }
+    }
+  };
+
+  &#x2F;&#x2F; Why is this inside auth now? Come on, Keystone!
+  if (this.tenantId != null) {
+    obj.auth.tenantId = this.tenantId;
+  }
+  else if (this.tenantName != null) {
+    obj.auth.tenantName = this.tenantName;
+  }
+
+  var body = JSON.stringify(obj);
+
+  &#x2F;&#x2F; Prepare the request.
+  var opts = URL.parse(url);
+  opts.method = &#x27;POST&#x27;;
+  opts.headers = this.$basicHeaders();
+  opts.headers[&#x27;Content-Length&#x27;] = body.length;
+
+  this.$request(opts, body, fn);
+};
+
+&#x2F;**
+ * Get the list of tenants for an identity.
+ *
+ * A tenant object looks like this:
+ *
+ * @method tenants
+ * @async
+ * @example
+ *   {
+ *     id: &#x27;TENANT_ID&#x27;,
+ *     name: &#x27;TENANT NAME&#x27;,
+ *     enabled: true,
+ *     created: TIMESTAMP,
+ *     updated: TIMESTAMP
+ *   }
+ *
+ *
+ * @param {object} identity An identity object.
+ * @param {Function} fn The callback function. This will be invoked with a list
+ *   of tenant objects: &#x60;fn(error, tenants)&#x60;
+ * @return {Array} An array of tenant objects.
+ *&#x2F;
+IdentityServices.prototype.tenants = function (identity, fn) {
+  var url = this.endpoint + &#x27;&#x2F;tenants&#x27;;
+  var opts = URL.parse(url);
+  opts.method = &#x27;GET&#x27;;
+  opts.headers = this.$basicHeaders();
+  opts.headers[&#x27;X-Auth-Token&#x27;] = identity.token();
+
+  Transport.doRequest(opts, &#x27;&#x27;, function (e, response, data) {
+    var json;
+    if (e) {
+      fn(e);
+      return;
+    }
+
+
+    json = JSON.parse(data);
+
+    fn(false, json.tenants);
+
+  });
+
+};
+
+&#x2F;**
+ * Verify that the certificate is an HPCloud certificate.
+ *
+ * This verification check was added to double-check for spoofing by a legit certificate.
+ *&#x2F;
+IdentityServices.prototype.isVerifiedCN = function (certificate) {
+  var cn = certificate.subject.CN;
+  &#x2F;&#x2F; console.log(&quot;Verifying %s&quot;, cn);
+  &#x2F;&#x2F; CN should be of the form REGION.GEO.identity.hpcloudsvc.com
+  return cn.search(&#x2F;^region-[a-z]+\.geo-[1-9]+\.identity\.hpcloudsvc.com$&#x2F;i) === 0;
+}
+
+&#x2F;**
+ * Do an identity request.
+ *
+ * *This is an internal method that should not be called by other methods.*
+ *
+ * @method $request
+ * @private
+ * @async
+ *
+ * @param {Object} opts An object with the opts to pass to the transport layer.
+ * @param {String} body The body of the request. If JSON than in string form.
+ * @param {Function} fn A callback function to execute after the request. The
+ *   callback accepts two params. The first is error and contains the error if
+ *   there is one. If the request was successful the first param is false and
+ *   the second param is an Identity object.
+ *&#x2F;
+IdentityServices.prototype.$request = function (opts, body, fn) {
+  var self = this;
+
+  &#x2F;&#x2F; Use Transport.
+  Transport.doRequest(opts, body, function (e, response, data) {
+    &#x2F;&#x2F; We pass the savings on to you.
+    if (e) {
+      fn(e);
+      return;
+    }
+
+    &#x2F;&#x2F; Verify that this is an HP Cloud Identity Services endpoint. This is an extra security
+    &#x2F;&#x2F; measure to prevent SSL spoofing.
+    if (self.verifyCN &amp;&amp; !self.isVerifiedCN(response.socket.getPeerCertificate())) {
+      var sece = new Error(&quot;Security error: Certificate is not an HPCloud certificate.&quot;);
+      fn(sece);
+      return;
+    }
+
+    var json = JSON.parse(data);
+    fn(false, new Identity(json));
+
+  });
+
+  &#x2F;&#x2F; Define the request.
+  &#x2F;*
+  var req = HTTP.request(opts, function (response) {
+    &#x2F;&#x2F; We accept only 200.
+    if (response.statusCode == 200) {
+      var responseData = &#x27;&#x27;;
+      response.on(&#x27;data&#x27;, function (bytes) {
+        responseData += bytes;
+      });
+      response.on(&#x27;end&#x27;, function() {
+        var json = JSON.parse(responseData);
+        var id = new Identity(json);
+        fn(true, id);
+      });
+    }
+    else {
+      console.log(&quot;FAILED with HTTP status code %d&quot;, response.statusCode);
+      fn(false, response.statusCode, &#x27;HTTP Error.&#x27;);
+    }
+  });
+
+  &#x2F;&#x2F; FIXME: Use better error handling.
+  req.on(&#x27;error&#x27;, function (e) {
+    console.log(&#x27;FAILED outside of HTTP: &#x27; + e.message);
+    fn(false, 0, e.message);
+  });
+
+  &#x2F;&#x2F; Write the body and trigger the request.
+  req.write(body);
+  req.end();
+ *&#x2F;
+};
+
+&#x2F;**
+ * The basic headers to use when making calls.
+ *
+ * *This is an internal method that should not be called by other methods.*
+ *
+ * @todo Should this be moved inside the transport layer?
+ * @method $basicHeaders
+ * @private
+ * @return {Object} An object with the basic headers.
+ *&#x2F;
+IdentityServices.prototype.$basicHeaders = function () {
+  return {
+    &#x27;Content-Type&#x27;: &#x27;application&#x2F;json&#x27;,
+    &#x27;Accept&#x27;: &#x27;application&#x2F;json&#x27;,
+    &#x27;User-Agent&#x27;: &#x27;hpcloud-js&#x2F;1.0 (64d9)&#x27;
+  };
+};
+
+&#x2F;**
+ * Attach a tenant to an object. This is a helper method used when authenticating.
+ *
+ * *This is an internal method that should not be called by other methods.*
+ *
+ * @method $tenant
+ * @private
+ * @param  {Object} obj The object to attach tenant information to.
+ *&#x2F;
+IdentityServices.prototype.$tenant = function (obj) {
+  if (this.tenantId != null) {
+    obj.tenantId = this.tenantId;
+  }
+  else if (this.tenantName != null) {
+    obj.tenantName = this.tenantName;
+  }
+};
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

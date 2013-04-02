@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib&#x2F;transport.js - HPCloud-JS</title>
+    <link rel="stylesheet" href="assets&#x2F;yui&#x2F;3.8.0&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.ico">
+    <script src="assets&#x2F;yui&#x2F;3.8.0&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1><img src="..&#x2F;assets/hp-cloud-logo.png" title="HPCloud-JS">HPCloud-JS</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/ACL.html">ACL</a></li>
+            
+                <li><a href="..&#x2F;classes/Container.html">Container</a></li>
+            
+                <li><a href="..&#x2F;classes/Futil.html">Futil</a></li>
+            
+                <li><a href="..&#x2F;classes/Identity.html">Identity</a></li>
+            
+                <li><a href="..&#x2F;classes/IdentityServices.html">IdentityServices</a></li>
+            
+                <li><a href="..&#x2F;classes/ObjectInfo.html">ObjectInfo</a></li>
+            
+                <li><a href="..&#x2F;classes/RemoteObject.html">RemoteObject</a></li>
+            
+                <li><a href="..&#x2F;classes/Subdir.html">Subdir</a></li>
+            
+                <li><a href="..&#x2F;classes/Transport.html">Transport</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/hpcloud.html">hpcloud</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: lib&#x2F;transport.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* ============================================================================
+(c) Copyright 2013 Hewlett-Packard Development Company, L.P.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge,publish, distribute, sublicense, and&#x2F;or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+============================================================================ *&#x2F;
+&#x2F;*!
+ *
+ *&#x2F;
+HTTPS = require(&#x27;https&#x27;);
+crypto = require(&#x27;crypto&#x27;);
+Futil = require(&#x27;.&#x2F;futil&#x27;);
+
+&#x2F;**
+ * The transport layer that handles communications with the API endpoints.
+ * 
+ * @class Transport
+ * @static
+ *&#x2F;
+module.exports = Transport = {
+  debug: false
+};
+
+&#x2F;**
+ * Do an HTTPS request.
+ *
+ * This performs a simple HTTPS request, and then
+ * executes the callback, passing the response object into the
+ * callback.
+ *
+ * @method doRequest
+ * @static
+ *
+ * @param {object} opts An object containing, at minimum, a parsed URL. To
+ *   create a new opts, use URL.parse(url).
+ * @param {string} [body] (Optional) The body of the request.
+ * @param {Function} fn A callback function. This receives an Error (on error),
+ *   a Response, and (if present) the data as a string.
+ *&#x2F;
+Transport.doRequest = function(opts, body, fn) {
+  var a = Futil.argsWithFn(arguments, [&#x27;opts&#x27;, &#x27;body&#x27;, &#x27;fn&#x27;]);
+  fn = a.fn;
+  opts = a.opts;
+  body = a.body;
+
+  &#x2F;&#x2F; Define the request.
+  var req = HTTPS.request(opts, function (response) {
+    &#x2F;&#x2F; We accept only status codes from 200-399.
+    if (response.statusCode &gt; 199 &amp;&amp; response.statusCode &lt; 400) {
+      &#x2F;&#x2F;console.log(response.socket.getPeerCertificate());
+      var responseData = &#x27;&#x27;;
+      response.on(&#x27;data&#x27;, function (bytes) {
+        responseData += bytes;
+      });
+      response.on(&#x27;end&#x27;, function() {
+        fn(false, response, responseData);
+      });
+      response.on(&#x27;close&#x27;, function (e) {
+        fn(e);
+      });
+    }
+    else {
+      &#x2F;&#x2F; console.log(&quot;FAILED with HTTP status code %d&quot;, response.statusCode);
+      var e = new Error(&#x27;HTTP Error &#x27; + response.statusCode);
+      e.statusCode = response.statusCode;
+      fn(e);
+    }
+  });
+
+  &#x2F;&#x2F; FIXME: Use better error handling.
+  req.on(&#x27;error&#x27;, function (e) {
+    &#x2F;&#x2F; console.log(&#x27;FAILED outside of HTTP: &#x27; + e.message);
+    var err = new Error(&#x27;Non-HTTP error: &#x27; + e.message);
+    err.statusCode = 0;
+    fn(err);
+  });
+
+  &#x2F;&#x2F; Write the body and trigger the request.
+  if (body) {
+    req.write(body);
+  }
+  req.end();
+};
+
+&#x2F;**
+ * Perform an HTTP request, but leave the data processing to something else.
+ *
+ * This is useful for requests that result in large payloads, or for any cases
+ * where the response returned needs to be streamed to something else.
+ *
+ * ObjectStorage is the quintessential use case.
+ *
+ * fn(Error e, Stream response);
+ *
+ * This will emit an error when the status code is 400 or above, but it does not manage
+ * redirects (3XX), 1XX and so on.
+ *
+ * IMPORTANT: On errors, the Stream is still passed.
+ *
+ * @method doUnmanagedRequest
+ * @static
+ *&#x2F;
+Transport.doUnmanagedRequest = function(opts, body, fn) {
+  var a = Futil.argsWithFn(arguments, [&#x27;opts&#x27;, &#x27;body&#x27;, &#x27;fn&#x27;]);
+  fn = a.fn;
+  opts = a.opts;
+  body = a.body;
+
+  &#x2F;&#x2F; Define the request.
+  var req = HTTPS.request(opts, function (response) {
+    if (response.statusCode &lt; 400) {
+      fn(false, response);
+    }
+    else {
+      console.log(&quot;FAILED with HTTP status code %d&quot;, response.statusCode);
+      var e = new Error(&#x27;HTTP Error &#x27; + response.statusCode);
+      e.statusCode = response.statusCode;
+      fn(e, response);
+    }
+  });
+
+  &#x2F;&#x2F; FIXME: Use better error handling.
+  req.on(&#x27;error&#x27;, function (e) {
+    console.log(&#x27;FAILED outside of HTTP: &#x27; + e.message);
+    var err = new Error(&#x27;Non-HTTP error: &#x27; + e.message);
+    err.statusCode = 0;
+    fn(err);
+  });
+
+  &#x2F;&#x2F; Write the body and trigger the request.
+  if (body) {
+    req.write(body);
+  }
+  req.end();
+
+};
+
+&#x2F;**
+ * Send large objects with a chunked request.
+ *
+ * This attempts to use HTTP chunked transfer encoding to send large objects
+ * to object storage.
+ *
+ * @param {Object} opts
+ *   HTTP options.
+ * @param {ReadableStream} stream
+ *   A stream, set to read at the first byte that should be sent.
+ * @param {Function} fn
+ *   The callback, which will receive fn(Error e, HTTPResponse r, {Buffer| String} data, String md5).
+ *   - e: set if there is an error
+ *   - r: the response object
+ *   - data: the body the remote host returned
+ *   - md5: The checksum of the posted body, used to verify return headers.
+ *&#x2F;
+Transport.doChunkedRequest = function (opts, stream, fn) {
+
+  var md5  = crypto.createHash(&#x27;md5&#x27;);
+  opts.headers[&#x27;Transfer-Encoding&#x27;] = &#x27;chunked&#x27;;
+
+  &#x2F;&#x2F; Define the request.
+  var req = HTTPS.request(opts, function (response) {
+
+    &#x2F;&#x2F; We accept only status codes from 200-399.
+    if (response.statusCode &gt; 199 &amp;&amp; response.statusCode &lt; 400) {
+      var responseData = &#x27;&#x27;;
+      response.on(&#x27;data&#x27;, function (bytes) {
+        responseData += bytes;
+      });
+      response.on(&#x27;end&#x27;, function() {
+        var digestMD5 = md5.digest(&#x27;hex&#x27;);
+        fn(false, response, responseData, digestMD5);
+      });
+    }
+    else {
+      console.log(&quot;FAILED with HTTP status code %d&quot;, response.statusCode);
+      var e = new Error(&#x27;HTTP Error &#x27; + response.statusCode);
+      e.statusCode = response.statusCode;
+      fn(e);
+    }
+  });
+
+  if (Transport.debug) {
+    req.on(&#x27;socket&#x27;, function (socket) {
+      socket.on(&#x27;data&#x27;, function (data) {
+        console.log(&#x27;----&gt; &#x27; + data);
+      });
+    });
+  }
+  &#x2F;&#x2F; FIXME: Use better error handling.
+  req.on(&#x27;error&#x27;, function (e) {
+    console.log(&#x27;FAILED outside of HTTP: &#x27; + e.message);
+    var err = new Error(&#x27;Non-HTTP error: &#x27; + e.message);
+    err.statusCode = 0;
+    fn(err);
+  });
+
+  &#x2F;&#x2F; If the input is a string or buffer, we just flush it and go.
+  if (typeof stream == &#x27;string&#x27; || stream instanceof Buffer) {
+    md5.update(stream);
+    req.write(stream);
+    req.end();
+    return;
+  }
+
+  stream.on(&#x27;data&#x27;, function (data) {
+    md5.update(data);
+    if (Transport.debug) console.log(&quot;Chunk: &quot; + data);
+  });
+  stream.pipe(req);
+
+};
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

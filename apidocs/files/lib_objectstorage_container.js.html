@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib&#x2F;objectstorage&#x2F;container.js - HPCloud-JS</title>
+    <link rel="stylesheet" href="assets&#x2F;yui&#x2F;3.8.0&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.ico">
+    <script src="assets&#x2F;yui&#x2F;3.8.0&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            <h1><img src="..&#x2F;assets/hp-cloud-logo.png" title="HPCloud-JS">HPCloud-JS</h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/ACL.html">ACL</a></li>
+            
+                <li><a href="..&#x2F;classes/Container.html">Container</a></li>
+            
+                <li><a href="..&#x2F;classes/Futil.html">Futil</a></li>
+            
+                <li><a href="..&#x2F;classes/Identity.html">Identity</a></li>
+            
+                <li><a href="..&#x2F;classes/IdentityServices.html">IdentityServices</a></li>
+            
+                <li><a href="..&#x2F;classes/ObjectInfo.html">ObjectInfo</a></li>
+            
+                <li><a href="..&#x2F;classes/RemoteObject.html">RemoteObject</a></li>
+            
+                <li><a href="..&#x2F;classes/Subdir.html">Subdir</a></li>
+            
+                <li><a href="..&#x2F;classes/Transport.html">Transport</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="..&#x2F;modules/hpcloud.html">hpcloud</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: lib&#x2F;objectstorage&#x2F;container.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* ============================================================================
+(c) Copyright 2013 Hewlett-Packard Development Company, L.P.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights to
+use, copy, modify, merge,publish, distribute, sublicense, and&#x2F;or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+============================================================================ *&#x2F;
+&#x2F;**
+ * A container holds numerous objects. A single object storage instance
+ * may have an indefinite number of containers, and each container may
+ * have an indefinite number of objects. However, containers may not
+ * have subcontainers.
+ *
+ * A container is not a directory. It is closer (to use a file system
+ * analogy) to a file system volume.
+ *&#x2F;
+
+var Util = require(&#x27;util&#x27;);
+var URL = require(&#x27;url&#x27;);
+var Futil = require(&#x27;..&#x2F;futil&#x27;);
+var Transport = require(&#x27;..&#x2F;transport&#x27;);
+var ACL = require(&#x27;.&#x2F;acl&#x27;);
+var ObjectInfo = require(&#x27;.&#x2F;objectinfo&#x27;);
+var RemoteObject = require(&#x27;.&#x2F;remoteobject&#x27;);
+var Subdir = require(&#x27;.&#x2F;subdir&#x27;);
+
+
+module.exports = Container;
+
+&#x2F;**
+ * Create a new container.
+ *
+ * When a new container is created, no check is done against the server
+ * to ensure that the container exists. Thus, it is possible to have a
+ * local container object that does not point to a legitimate
+ * server-side container.
+ *
+ * @class Container
+ * @constructor
+ *
+ * @param {String} name The name of the container.
+ * @param {String} token An authentication token.
+ * @param {String} url The URL of the container.
+ *&#x2F;
+function Container(name, token, url) {
+  this._name = name;
+  this._url = url;
+  this._token = token;
+  this.isNew = false;
+}
+
+&#x2F;**
+ * Construct a new Container from a response.
+ *
+ * Internally, this is used to build a new container from HTTP headers.
+ *
+ * @method newFromResponse
+ * @static
+ *
+ * @param {String} name The name of the container.
+ * @param {HTTPResponse} response An HTTP response object.
+ * @param {String} token An authentication token.
+ * @param {String} endpoint The URL to the Swift REST endpoint. This is used as
+ *   the base URL to construct a URL to the container itself.
+ * @return {Container} A container object.
+ *&#x2F;
+Container.newFromResponse = function (name, response, token, endpoint) {
+  var url = endpoint + &#x27;&#x2F;&#x27; + encodeURI(name);
+  var container = new Container(name, token, url);
+  var headers = response.headers;
+
+  container._bytes = headers[&#x27;x-container-bytes-used&#x27;];
+  container._count = headers[&#x27;x-container-object-count&#x27;];
+  container._baseUrl = endpoint;
+
+  var metadata = Container.decodeMetadata(headers);
+  container.setMetadata(metadata);
+
+  this._acl = ACL.newFromHeaders(headers);
+
+  return container;
+};
+
+&#x2F;**
+ * Create a new Container from JSON data.
+ *
+ * This is used to create a new container object from a JSON response.
+ *
+ * @method newFromJSON
+ * @static
+ *
+ * @param {Object} json JSON data in the correct format.
+ * @param {String} token The auth token.
+ * @param {String} url The URL to object storage. This will be modified
+ *   internally to point to this container.
+ * @return {Container} A container object.
+ *&#x2F;
+Container.newFromJSON = function (json, token, url) {
+  var fullUrl = url + &#x27;&#x2F;&#x27; + encodeURI(json.name);
+  var container = new Container(json.name, token, fullUrl);
+  container._baseUrl = url;
+  container._count = json.count || 0;
+  container._bytes = json.bytes || 0;
+
+  return container;
+};
+
+&#x2F;**
+ * Get the name of this container.
+ *
+ * @method name
+ * @return {String} The container name.
+ *&#x2F;
+Container.prototype.name = function() {
+  return this._name;
+};
+
+&#x2F;**
+ * Get the token used with this container.
+ *
+ * @method token
+ * @return {String} The token.
+ *&#x2F;
+Container.prototype.token = function () {
+  return this._token;
+};
+
+&#x2F;**
+ * Get the byte count for this container.
+ *
+ * Retrieves the number of bytes this container currently
+ * consumes.
+ *
+ * @method bytes
+ * @return {Number} The byte count (an Integer).
+ *&#x2F;
+Container.prototype.bytes = function () {
+  return this._bytes || 0;
+};
+
+&#x2F;**
+ * Get the number of objects in the container.
+ *
+ * This returns the count of objects currently inside of the container.
+ * This is the total number of objects, not the number of objects at the
+ * &quot;top level&quot; of the container.
+ *
+ * @method count
+ * @return {Number} The number of items in the container.
+ *&#x2F;
+Container.prototype.count = function () {
+  return this._count || 0;
+};
+
+&#x2F;**
+ * Get the URL of this container.
+ *
+ * @method url
+ * @return {String} The URL pointing to this container.
+ *&#x2F;
+Container.prototype.url = function () {
+  return this._url;
+};
+
+&#x2F;**
+ * Get the ACL for the current container.
+ *
+ * In some cases, this will result in a request to the
+ * remote server.
+ *
+ * @method acl
+ * @async
+ * @param {Function} fn The callback, which will receive fn(Error e, ACL acl);
+ *&#x2F;
+Container.prototype.acl = function (fn) {
+  if (this._acl== undefined) {
+    this.fetchDetails(this, function (e, container) {
+      &#x2F;&#x2F; container is actually the outer object.
+      fn(e, container._acl);
+    });
+  }
+  else {
+    fn(false, this._acl);
+  }
+};
+
+&#x2F;**
+ * Get the metadata for a container.
+ *
+ * Depending on how the container was constructed, this may require a
+ * trip to the remote server to fetch metadata.
+ *
+ * @method metadata
+ * @async
+ * @param {Function} fn The callback, which will receive two parameters:
+ *   fn(Error e, Object metadata).
+ *&#x2F;
+Container.prototype.metadata = function (fn) {
+  if (this._metadata == undefined) {
+    this.fetchDetails(this, function (e, container) {
+      &#x2F;&#x2F; container is actually the outer object.
+      fn(e, container._metadata);
+    });
+  }
+  else {
+    fn(false, this._metadata);
+  }
+};
+
+&#x2F;**
+ * Set the metadata on the present object.
+ *
+ * This does NOT save the metadata on the remote server.
+ *
+ * @method setMetadata
+ * @param {Object} metadata Name&#x2F;value pairs for metadata. It is recommended
+ *   that you encode the values prior to putting them here, as the Swift REST
+ *   docs make no assumptions about how the metadata is encoded or decoded.
+ *&#x2F;
+Container.prototype.setMetadata = function (metadata) {
+  this._metadata = metadata;
+};
+
+&#x2F;&#x2F; ============================================
+&#x2F;&#x2F; CDN functions
+&#x2F;&#x2F; ============================================
+
+Container.prototype.cdnUrl = function () {
+  throw new Error(&#x27;Not implemented.&#x27;);
+};
+
+Container.prototype.useCDN = function () {
+  throw new Error(&#x27;useCDN not implemented.&#x27;);
+};
+
+&#x2F;&#x2F; ============================================
+&#x2F;&#x2F; Object functions
+&#x2F;&#x2F; ============================================
+
+&#x2F;**
+ * Update the metadata on an object.
+ *
+ * This allows you to update an object&#x27;s metadata without
+ * requiring you to re-post the object&#x27;s data payload.
+ *
+ * According to the Swift documentation, this ONLY modifies the arbitrary
+ * metadata (See ObjectInfo.setMetadata()). Other info, including content type,
+ * disposition, and so on, cannot be changed this way.
+ *
+ * IMPORTANT: To change the Content-Type of an object, you can use the
+ * Container.copy() method, copying the source to the same destination.
+ *
+ * @method updateObjectMetadata
+ * @async
+ * @param {ObjectInfo} info The local copy of the object that should be updated
+ *   on the remote server.
+ * @param {Function} fn The callback. This is called as fn(Error e).
+ *&#x2F;
+Container.prototype.updateObjectMetadata = function (info, fn) {
+  var url = this.url() + &#x27;&#x2F;&#x27; + encodeURI(info.name());
+  var opts = URL.parse(url);
+  opts.method = &#x27;POST&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27; : this._token,
+    &#x27;Content-Type&#x27;: info.contentType()
+  }
+  info.mergeMetadataHeaders(opts.headers);
+
+  Transport.doRequest(opts, function (e, response) {
+    if (e) {
+      fn(e);
+      return;
+    }
+    fn(false);
+  });
+
+};
+
+&#x2F;**
+ * Write an object to the remote data store.
+ *
+ * Importantly, certain fields on the ObjectInfo are ignored when saving:
+ * - eTag: This is generated on the fly to ensure accuracy.
+ * - Content-Length: This is not used, since we send with chunked encoding.
+ *
+ * @method save
+ * @async
+ * @param {ObjectInfo} obj The object to write.
+ * @param {String|Buffer|Stream} content
+ * @param {Function} fn The callback. fn(Error e, HTTPResponse r)
+ *&#x2F;
+Container.prototype.save = function (obj, content, fn) {
+  var url = this.url() + &#x27;&#x2F;&#x27; + encodeURI(obj.name());
+  var opts = URL.parse(url);
+  opts.method = &#x27;PUT&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27; : this._token,
+    &#x27;Content-Type&#x27;: obj.contentType()
+  }
+  var encoding = obj.transferEncoding();
+  var disposition = obj.disposition();
+
+  if (encoding) {
+    opts.headers[&#x27;Content-Encoding&#x27;] = encoding;
+  }
+  if (disposition) {
+    opts.headers[&#x27;Content-Disposition&#x27;] = disposition;
+  }
+
+  &#x2F;&#x2F; Add metadata.
+  obj.mergeMetadataHeaders(opts.headers);
+  obj.mergeAdditionalHeaders(opts.headers);
+
+  Transport.doChunkedRequest(opts, content, function (e, response, data, md5) {
+
+    if (e) {
+      fn(e);
+      return;
+    }
+
+    &#x2F;&#x2F; The ETag that is returned from ObjectStorage should match the MD5 checksum that
+    &#x2F;&#x2F; we generate here. Since we&#x27;re streaming data, we don&#x27;t send an ETag with the initial
+    &#x2F;&#x2F; request, so Swift can&#x27;t do an integrity check. Consequently, it is our responsibility
+    &#x2F;&#x2F; to do this.
+    &#x2F;&#x2F; FIXME: This should probably be an event emitter so that a listener can rollback a save
+    &#x2F;&#x2F; if they want.
+    var eTag = response.headers.etag;
+    &#x2F;&#x2F;console.log(&quot;ETag: %s, MD5: %s&quot;, eTag, md5);
+    if (eTag != md5) {
+      fn(new Error(&#x27;Expected ETag &#x27; + eTag + &#x27; to match &#x27; + md5));
+      return;
+    }
+
+    fn(false, response);
+
+  });
+
+};
+
+&#x2F;**
+ * Copy a resource from one path to another, or from one container to another.
+ *
+ * This does a remote-side copy, so the payload is never transferred locally.
+ *
+ * An interesting side effect of copy() is that you can change the metadata of a destination
+ * object by supplying alternative metadata during copy. You can also change content type
+ * and other properties. Since you can copy an object to itself, this is the
+ * cheapest way to change metadata.
+ *
+ * To do this, provide an ObjectInfo as the first argument. That will then be used to
+ * set headers and metadata.
+ *
+ * @method copy
+ * @async
+ * @param {ObjectInfo|String} info The object to copy.
+ * @param {String} newName The name of the new object.
+ * @param {String} [containerName] (Optional) The name of the container to copy to.
+ *   If none is specified, the present container is used.
+ * @param {Function} fn The callback, called like this: fn(Error e);
+ *&#x2F;
+Container.prototype.copy = function (info, newName, containerName, fn) {
+  var a = Futil.argsWithFn(arguments, [&#x27;info&#x27;, &#x27;newName&#x27;, &#x27;containerName&#x27;, &#x27;fn&#x27;]);
+  info = a.info;
+  newName = a.newName;
+  containerName = a.containerName || this.name();
+  fn = a.fn;
+
+  &#x2F;&#x2F; Source
+  var sourceName = info instanceof ObjectInfo ? info.name() : info;
+  var sourceUrl = this.url() + &#x27;&#x2F;&#x27; + encodeURI(sourceName);
+
+  &#x2F;&#x2F; Destination: This is of the form &#x2F;CONAINER&#x2F;PATH
+  var destUrl;
+  destUrl = &#x27;&#x2F;&#x27; + encodeURI(containerName) + &#x27;&#x2F;&#x27; + encodeURI(newName);
+
+  var opts = URL.parse(sourceUrl);
+  opts.method = &#x27;COPY&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27;: this._token,
+    &#x27;Destination&#x27;: destUrl
+  };
+
+  &#x2F;&#x2F; Swift allows us to mutate the metadata on the destination object.
+  if (info instanceof ObjectInfo) {
+    &#x2F;&#x2F; Add metadata.
+    info.mergeMetadataHeaders(opts.headers);
+    info.mergeAdditionalHeaders(opts.headers);
+
+    &#x2F;&#x2F; This happens if the info object was loaded from a list, and these
+    &#x2F;&#x2F; properties were never set. This is okay.
+    var encoding;
+    var disposition;
+    try {
+      encoding = info.transferEncoding();
+      disposition = info.disposition();
+    } catch (e) {}
+
+    var type = info.contentType();
+
+    if (encoding) {
+      opts.headers[&#x27;Content-Encoding&#x27;] = encoding;
+    }
+    if (disposition) {
+      opts.headers[&#x27;Content-Disposition&#x27;] = disposition;
+    }
+    if (type) {
+      opts.headers[&#x27;Content-Type&#x27;] = type;
+    }
+  }
+
+  Transport.doRequest(opts, function (e, response) {
+    if (e) {
+      fn(e);
+      return;
+    }
+    fn(false);
+  });
+};
+
+&#x2F;**
+ * Get information about an object.
+ *
+ * This includes all of the standard data (name, content type,
+ * content length, eTag&#x2F;md5, and so on) as well as any 
+ * metadata that was attaached to the object.
+ *
+ * This does NOT get the object&#x27;s body. The object() method
+ * must be used for that.
+ *
+ * @method objectInfo
+ * @async
+ * @param {String} name The name of the object to retrieve.
+ * @param {Function} fn A callback.
+ *&#x2F;
+Container.prototype.objectInfo = function (name, fn) {
+  var opts = URL.parse(this.url() + &#x27;&#x2F;&#x27; + encodeURI(name));
+  opts.method = &#x27;HEAD&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27; : this._token,
+  };
+
+  var token = this._token;
+  var baseUrl = this.url();
+
+  Transport.doRequest(opts, function (e, response) {
+    if (e) {
+      fn(e);
+      return;
+    }
+
+    var info = ObjectInfo.newFromResponse(name, response, token, baseUrl);
+    fn(false, info);
+  });
+};
+
+&#x2F;**
+ * Get a RemoteObject instance.
+ *
+ * This fetches an object from object storage.
+ *
+ * The returned object is a stream, and will also have
+ * an ObjectInfo attached.
+ *
+ * Importantly, no processing is done on the returned object. It is passed on
+ * as-is. No length or etag checking is done. No content type validation is done.
+ * The data is not read first and buffered.
+ *
+ * @method remoteObject
+ * @async
+ * @param {String} name The name of the object to fetch.
+ * @param {Function} fn The callback, called as
+ *   fn(Error e, RemoteObject o)
+ *&#x2F;
+Container.prototype.remoteObject = function (name, fn) {
+
+  var opts = URL.parse(this.url() + &#x27;&#x2F;&#x27; + encodeURI(name));
+  opts.method = &#x27;GET&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27; : this._token,
+  };
+  Transport.doUnmanagedRequest(opts, function (e, response) {
+    if (e) {
+      fn(e);
+      return;
+    }
+
+    var obj = new RemoteObject(name, response);
+
+    fn(false, obj);
+  });
+};
+
+Container.prototype.object = Container.prototype.remoteObject;
+
+&#x2F;**
+ * Query for an object.
+ *
+ * See objects(), objectsWithPrefix(), and objectsByPath() for simpler queries.
+ *
+ * The following params are supported:
+ * - params.limit: set the maximum number of items returned
+ * - params.marker: get the next item after the named marker. Marker is an object name.
+ * - params.prefix: Use prefix&#x2F;delimiter notation to get a &quot;subdirectory&quot; listing.
+ * - params.delimiter: the delimiter to use to separate directories. Usually &#x27;&#x2F;&#x27;.
+ * - params.path: Use a path prefix to get children on a path.
+ *
+ * @method objectQuery
+ * @async
+ * @param {Object} params Any number of paramters, as specified above.
+ * @param {Function} fn The callback, executed as fn(Error e, Array list). The
+ *   Array is a list of ObjectInfo items and (depending on params) Subdir items.
+ *&#x2F;
+Container.prototype.objectQuery = function (params, fn) {
+  var pstring = &#x27;?format=json&#x27;;
+  if (params.limit != undefined) {
+    pstring += &#x27;&amp;limit=&#x27; + encodeURI(params.limit);
+  }
+  if (params.marker != undefined) {
+    pstring += &#x27;&amp;marker=&#x27; + encodeURIComponent(params.marker);
+  }
+  if (params.delimiter != undefined) {
+    pstring += &#x27;&amp;delimiter=&#x27; + encodeURIComponent(params.delimiter);
+  }
+
+  &#x2F;&#x2F; Only one of path or prefix is allowed.
+  if (params.prefix != undefined) {
+    pstring += &#x27;&amp;prefix=&#x27; + encodeURIComponent(params.prefix);
+  }
+  else if (params.path != undefined) {
+    pstring += &#x27;&amp;path=&#x27; + encodeURIComponent(params.path);
+  }
+
+  var url = this.url() + pstring;
+  var opts = URL.parse(url);
+  opts.method = &#x27;GET&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27; : this._token,
+  };
+
+  var token = this.token();
+  var baseUrl = this.url();
+  Transport.doRequest(opts, function (e, response, data) {
+    if (e) {
+      fn(e);
+      return;
+    }
+    var json = JSON.parse(data);
+    var list = [];
+    for (var i = 0; i &lt; json.length; ++i) {
+      var item = json[i];
+      if (item.subdir == undefined) {
+        list.push(ObjectInfo.newFromJSON(item, token, baseUrl));
+      }
+      else {
+        list.push(new Subdir(item.subdir, params.delimiter));
+      }
+
+    }
+    fn(false, list);
+  });
+};
+
+&#x2F;**
+ * Query for all the objects based on a limited set of criteria.
+ *
+ * This is a wrapper around objectQuery.
+ *
+ * @method objects
+ * @async
+ * @param {Number} limit The number of objects to limit the query to.
+ * @param {String} [marker] Get the next item after the marker. A marker is an
+ *   object name.
+ * @param {Function} fn The callback, executed as fn(Error e, Array list). The
+ *   Array is a list of ObjectInfo items and (depending on params) Subdir items.
+ *&#x2F;
+Container.prototype.objects = function (limit, marker, fn) {
+  var params = Futil.argsWithFn(arguments, [&#x27;limit&#x27;, &#x27;marker&#x27;, &#x27;fn&#x27;]);
+  fn = params.fn;
+
+  &#x2F;&#x2F; Unset this just to be safe.
+  params.fn = undefined;
+
+  this.objectQuery(params, fn);
+};
+
+&#x2F;**
+ * Retrieve a list of Objects with the given prefix.
+ *
+ * Object Storage containers support directory-like organization. To
+ * get a list of items inside of a particular &quot;subdirectory&quot;, provide
+ * the directory name as a &quot;prefix&quot;. This will return only objects
+ * that begin with that prefix.
+ *
+ * (Directory-like behavior is also supported by using &quot;directory
+ * markers&quot;. See objectsByPath().)
+ *
+ * Prefixes
+ *
+ * Prefixes are basically substring patterns that are matched against
+ * files on the remote object storage.
+ *
+ * When a prefix is used, object storage will begin to return not just
+ * Object instsances, but also Subdir instances. A Subdir is simply a
+ * container for a &quot;path name&quot;.
+ *
+ * Delimiters
+ *
+ * Object Storage (OpenStack Swift) does not have a native concept of
+ * files and directories when it comes to paths. Instead, it merely
+ * represents them and simulates their behavior under specific
+ * circumstances.
+ *
+ * The default behavior (when prefixes are used) is to treat the &#x27;&#x2F;&#x27;
+ * character as a delimiter. Thus, when it encounters a name like
+ * this: &#x60;foo&#x2F;bar&#x2F;baz.txt&#x60; and the prefix is &#x60;foo&#x2F;&#x60;, it will
+ * parse return a Subdir called &#x60;foo&#x2F;bar&#x60;.
+ *
+ * Setting &#x60;delimiter&#x60; will tell the Object Storage server which
+ * character to parse the filenames on. This means that if you use
+ * delimiters other than &#x27;&#x2F;&#x27;, you need to be very consistent with your
+ * usage or else you may get surprising results.
+ *
+ * @method objectsWithPrefix
+ * @async
+ * @param {String} prefix
+ * @param {String} delimiter
+ * @param {int} limit
+ * @param {String} marker
+ * @param {Function} fn The callback will receive fn(Error e, Array list), where
+ *   the array is a list of ObjectInfo objects.
+ *&#x2F;
+Container.prototype.objectsWithPrefix = function (prefix, delimiter, limit, marker, fn) {
+  var a = Futil.argsWithFn(arguments, [&#x27;prefix&#x27;, &#x27;delimiter&#x27;, &#x27;limit&#x27;, &#x27;marker&#x27;, &#x27;fn&#x27;]);
+  fn = a.fn;
+  a.fn = undefined;
+
+  this.objectQuery(a, fn);
+};
+
+&#x2F;**
+ * Specify a path (subdirectory) to traverse.
+ *
+ * OpenStack Swift provides two basic ways to handle directory-like
+ * structures. The first is using a prefix (see objectsWithPrefix()).
+ * The second is to create directory markers and use a path.
+ *
+ * A directory marker is just a file with a name that is
+ * directory-like. You create it exactly as you create any other file.
+ * Typically, it is 0 bytes long with the content type &#x60;application&#x2F;directory&#x60;
+ *
+ * Using objectsByPath() with directory markers will return a list of
+ * Object instances, some of which are regular files, and some of
+ * which are just empty directory marker files. When creating
+ * directory markers, you may wish to set metadata or content-type
+ * information indicating that they are directory markers.
+ *
+ * At one point, the OpenStack documentation suggested that the path
+ * method was legacy. More recent versions of the documentation no
+ * longer indicate this.
+ *
+ * @method objectsByPath
+ * @async
+ * @param {String} path The path to query objects for.
+ * @param {String} delimiter A delimiter used to seperate paths in a directory
+ *   like structure.
+ * @param {Number} [limit] The number of objects to limit the query to.
+ * @param {String} [marker] Get the next item after the marker. A marker is an
+ *   object name.
+ * @param {Function} fn The callback will receive fn(Error e, Array list), where
+ *   the array is a list of ObjectInfo objects.
+*&#x2F;
+Container.prototype.objectsByPath = function (path, delimiter, limit, marker, fn) {
+  var a = Futil.argsWithFn(arguments, [&#x27;path&#x27;, &#x27;delimiter&#x27;, &#x27;limit&#x27;, &#x27;marker&#x27;, &#x27;fn&#x27;]);
+  fn = a.fn;
+  a.fn = undefined;
+
+  this.objectQuery(a, fn);
+};
+
+&#x2F;**
+ * Delete an object.
+ *
+ * @method delete
+ * @async
+ * @param {String} name The name of the object to delete.
+ * @param {Function} fn The callback. Called with fn(Error e, boolean status).
+ *   Errors are returned if the resource could not be found. &#x60;status&#x60; will
+ *   be true if the resource was deleted.
+ *&#x2F;
+Container.prototype.delete = function (name, fn) {
+  var opts = URL.parse(this.url() + &#x27;&#x2F;&#x27; + encodeURI(name));
+  opts.method = &#x27;DELETE&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27;: this._token
+  }
+
+  Transport.doRequest(opts, function (e, res) {
+    if (e) {
+      fn(e);
+      return;
+    }
+    &#x2F;&#x2F; Anything we need to do here?
+    fn(e, res.statusCode == 204);
+  });
+};
+
+&#x2F;&#x2F; ============================================
+&#x2F;&#x2F; Internal&#x2F;Util Functions
+&#x2F;&#x2F; ============================================
+
+&#x2F;**
+ * fn(Error, Container);
+ *
+ * @method fetchDetails
+ * @async
+ * @private
+ * @param {String} contriner
+ * @param {Function} fn
+ *&#x2F;
+Container.prototype.fetchDetails = function (container, fn) {
+  var url = container.url();
+  var token = container.token();
+  &#x2F;&#x2F; Need a check here.
+  var opts = URL.parse(url);
+  opts.method = &#x27;GET&#x27;;
+  opts.headers = {
+    &#x27;X-Auth-Token&#x27;: token
+  };
+  Transport.doRequest(opts, function (e, response) {
+    if (e) {
+      fn(e, {});
+      return;
+    }
+    var headers = response.headers;
+
+    container._bytes = headers[&#x27;x-container-bytes-used&#x27;];
+    container._count = headers[&#x27;x-container-object-count&#x27;];
+
+    container._acl = ACL.newFromHeaders(headers);
+
+    var metadata = Container.decodeMetadata(headers);
+    container.setMetadata(metadata);
+    fn(false, container);
+  });
+
+};
+
+&#x2F;**
+ * Convert the metadata to headers.
+ *
+ * @method encodeMetadata
+ * @private
+ * @param  {Object} metadata An object with key value pairs of metadata.
+ * @param  {Object} [headers] An object with http headers (optional).
+ * @return {Object} A headers object with metadata encoded and attached.
+ *&#x2F;
+Container.encodeMetadata = function (metadata, headers) {
+  if (!headers) {
+    headers = {};
+  }
+
+  var format = &quot;X-Container-Meta-%s&quot;;
+  for (var name in metadata) {
+    var newName = Util.format(format, encodeURIComponent(name));
+    headers[newName] = metadata[name];
+  }
+  return headers;
+};
+
+&#x2F;**
+ * Decode the http headers meta data into a seperate object containing just the metadata.
+ *
+ * @method decodeMetadata
+ * @private
+ * @param  {Object} headers http headers from a response.
+ * @return {Object} An object with the metadata.
+ *&#x2F;
+Container.decodeMetadata = function (headers) {
+  var metadata = {};
+  var prefix = &#x27;x-container-meta-&#x27;;
+  var plen = prefix.length;
+  for (header in headers) {
+    if (header.indexOf(prefix) == 0) {
+      var m = decodeURIComponent(header.substring(plen));
+      metadata[m] = headers[header];
+    }
+  }
+  return metadata;
+};
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>
