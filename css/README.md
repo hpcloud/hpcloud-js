@@ -1,0 +1,1 @@
+Please edit the sass files in the sass directory. Those are compiled into the files in this directory.

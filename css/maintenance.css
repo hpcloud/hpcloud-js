@@ -1,0 +1,146 @@
+/*
+ * This page contains the maintenance page styling.
+ */
+/* line 7, ../sass/maintenance.sass */
+* {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+/* line 13, ../sass/maintenance.sass */
+html,
+body {
+  font: 11px/1.5 Arial, sans-serif;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* line 19, ../sass/maintenance.sass */
+#background,
+#credit,
+#message {
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+}
+
+/* line 28, ../sass/maintenance.sass */
+#background {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* line 39, ../sass/maintenance.sass */
+#message,
+#message a {
+  color: white;
+}
+
+/* line 43, ../sass/maintenance.sass */
+#message {
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-shadow: black 0 2px 5px;
+  -moz-box-shadow: black 0 2px 5px;
+  box-shadow: black 0 2px 5px;
+  background-image: url('../images/logo_hpcs.png?1354123683');
+  background-repeat: no-repeat;
+  background-position: center 20px;
+  background-color: #333333;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid #d9d9d9;
+  font-size: 25px;
+  line-height: 40px;
+  padding: 80px 20px 0;
+  text-align: center;
+  text-shadow: black 0 1px 1px;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+}
+
+/* line 62, ../sass/maintenance.sass */
+#message h1 {
+  background-color: #663333;
+  background-color: rgba(217, 217, 217, 0.25);
+  border-top: 1px dotted white;
+  border-bottom: 1px dotted white;
+  font-size: 50px;
+  margin: 0 -19px;
+  padding: 20px 0;
+}
+
+/* line 74, ../sass/maintenance.sass */
+#message h1,
+#message p {
+  margin-bottom: 20px;
+}
+
+/* line 78, ../sass/maintenance.sass */
+#message small {
+  font-size: 75%;
+}
+
+/* line 81, ../sass/maintenance.sass */
+#message span {
+  color: #555555;
+  font-weight: bold;
+}
+
+/* line 85, ../sass/maintenance.sass */
+#message a {
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: #555555;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+  font-size: 20px;
+  text-decoration: none;
+}
+
+/* line 93, ../sass/maintenance.sass */
+#message a:hover {
+  border-bottom-color: white;
+}
+
+/* line 96, ../sass/maintenance.sass */
+#credit {
+  background: black;
+  background: rgba(0, 0, 0, 0.7);
+  color: #999999;
+  padding: 5px 10px;
+  text-align: right;
+  text-decoration: none;
+  text-transform: uppercase;
+  left: 0;
+  bottom: 0;
+}
+
+/* line 107, ../sass/maintenance.sass */
+#credit:hover {
+  color: white;
+}
+
+/* line 110, ../sass/maintenance.sass */
+body {
+  background-color: black;
+  background: url('../images/maintenance.jpg?1354123683') black no-repeat center;
+}
+
+/* line 113, ../sass/maintenance.sass */
+#message {
+  width: 425px;
+}
