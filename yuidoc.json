@@ -3,6 +3,7 @@
     "description": "A JavaScript library for node.js to interact with HP Cloud",
     "version": "0.0.1",
     "options": {
-    	"paths": "lib"
+    	"paths": "lib",
+    	"outdir": "apidocs"
     }
 }
