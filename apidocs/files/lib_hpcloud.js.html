@@ -123,6 +123,65 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ============================================================================ *&#x2F;
 &#x2F;**
+ * The HP Cloud JS module provides Node.js APIs for HP Cloud&#x27;s services.
+ *
+ * HP Cloud is based on OpenStack, but has a number of extensions, such as
+ * CDN integration and Database as a Service (DBaaS). This library provides
+ * a consistent, tested interface to HP Cloud&#x27;s flavor of OpenStack. Many of
+ * these libraries will also work with vanilla OpenStack.
+ *
+ * In general, working with this library is done like this:
+ *
+ * - Use the IdentityServices library to authenticate to the HP Cloud.
+ * - Pass the resulting Identity object to one or more of the service
+ *   libraries to work with those services.
+ *
+ * For example, to list the containers you have in Object Storage, you might
+ * do something like this:
+ *
+ *     &#x2F;&#x2F; The IdentityService is necessary to connect to the HP Cloud.
+ *     var IdentityService = require(&#x27;..&#x2F;lib&#x2F;identityservices&#x27;);
+ *     
+ *     &#x2F;&#x2F; These two are for ObjectStorage.
+ *     var ObjectStorage = require(&#x27;..&#x2F;lib&#x2F;objectstorage&#x27;);
+ *     var Container = require(&#x27;..&#x2F;lib&#x2F;objectstorage&#x2F;container&#x27;);
+ *     
+ *     &#x2F;&#x2F; Create a new IdentityService service. Give it the URL to your
+ *     &#x2F;&#x2F; HP CLoud endpoint.
+ *     var is = new IdentityService(&quot;https:&#x2F;&#x2F;...&quot;);
+ *     &#x2F;&#x2F; Point it to a particular tenant ID.
+ *     is.setTenantId(&quot;12345678&quot;);
+ *     
+ *     &#x2F;&#x2F; Using key and shared secret, log in. There is another function that
+ *     &#x2F;&#x2F; allows you to use login&#x2F;password if you wish.
+ *     is.authenticateAsAccount(&quot;123accountID&quot;, &quot;321Secret&quot;, function (e, id) {
+ *       &#x2F;&#x2F; Now that we have an identity object (id), we can create a new
+ *       &#x2F;&#x2F; ObjectStorage instance and access our object store. We need to
+ *       &#x2F;&#x2F; tell it which region to use, since there are multiple regions.
+ *       var store = ObjectStorage.newFromIdentity(id, &#x27;region-a.geo-1&#x27;);
+ *       &#x2F;&#x2F; Now that we have a handle to our object store, we can do whatever
+ *       &#x2F;&#x2F; object storage operations we want. For example, we can get a list of
+ *       &#x2F;&#x2F; the current containers in this region:
+ *       store.containers(function(e, list) {
+ *         &#x2F;&#x2F; Do something with the list of containers.
+ *       });
+ *     });
+ *
+ * The above is a good example of the typical patterns used for working with the
+ * HP Cloud bindings. As with most good Node.js libraries, the HPCloud-JS library
+ * is asynchronous wherever possible.
+ *
+ * For more good examples of working with the HPCloud-JS APIs, see the tests in
+ * the &#x60;test&#x2F;&#x60; directory. For example, &#x60;test&#x2F;test-objectstorage.js&#x60; exercises
+ * the entire ObjectStorage API.
+ *
+ * ## Interested in Contributing?
+ *
+ * This project is open source, and we welcome new contributors. Just drop by
+ * the issue queue and introduce yourself.
+ *
+ *
+ * @main hpcloud
  * @module hpcloud
  *&#x2F;
 
