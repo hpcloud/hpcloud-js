@@ -45,7 +45,6 @@ This little snippet connects to the `IdentityService`,
 authenticates, and then connects to `ObjectStorage`. Then it gets a 
 list of containers.
 
-```
     // The IdentityService is necessary to connect to the HP Cloud.
     var IdentityService = require('../lib/identityservices');
     
@@ -73,7 +72,6 @@ list of containers.
         // Do something with the list of containers.
       });
     });
-```
 
 Ready to learn more? Take a look at the API docs, or read through some
 of the tests.
