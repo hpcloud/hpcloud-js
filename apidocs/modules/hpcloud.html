@@ -17,7 +17,7 @@
             <h1><img src="..&#x2F;assets/hp-cloud-logo.png" title="HPCloud-JS">HPCloud-JS</h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.0.1</em>
+            <em>API Docs for: 1.0.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -135,11 +135,11 @@ libraries to work with those services.</li>
 do something like this:</p>
 
 <pre class="code prettyprint"><code>// The IdentityService is necessary to connect to the HP Cloud.
-var IdentityService = require('../lib/identityservices');
+var IdentityService = require('hpcloud-js').IdentityServices;
 
 // These two are for ObjectStorage.
-var ObjectStorage = require('../lib/objectstorage');
-var Container = require('../lib/objectstorage/container');
+var ObjectStorage = require('hpcloud-js').ObjectStorage;
+var Container = require('hpcloud-js').ObjectStorage.Container;
 
 // Create a new IdentityService service. Give it the URL to your
 // HP CLoud endpoint.
