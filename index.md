@@ -46,15 +46,11 @@ authenticates, and then connects to `ObjectStorage`. Then it gets a
 list of containers.
 
     // The IdentityService is necessary to connect to the HP Cloud.
-    var IdentityService = require('../lib/identityservices');
-    
-    // These two are for ObjectStorage.
-    var ObjectStorage = require('../lib/objectstorage');
-    var Container = require('../lib/objectstorage/container');
+    var hpcloud = require('hpcloud-php');
     
     // Create a new IdentityService service. Give it the URL to your
     // HP CLoud endpoint.
-    var is = new IdentityService("https://...");
+    var is = new hpcloud.IdentityService("https://...");
     // Point it to a particular tenant ID.
     is.setTenantId("12345678");
     
@@ -64,7 +60,7 @@ list of containers.
       // Now that we have an identity object (id), we can create a new
       // ObjectStorage instance and access our object store. We need to
       // tell it which region to use, since there are multiple regions.
-      var store = ObjectStorage.newFromIdentity(id, 'region-a.geo-1');
+      var store = hpcloud.ObjectStorage.newFromIdentity(id, 'region-a.geo-1');
       // Now that we have a handle to our object store, we can do whatever
       // object storage operations we want. For example, we can get a list of
       // the current containers in this region:
