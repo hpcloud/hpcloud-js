@@ -1,7 +1,7 @@
 {
     "name": "HPCloud-JS",
     "description": "A JavaScript library for node.js to interact with HP Cloud",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "options": {
     	"paths": "lib",
     	"outdir": "apidocs"
