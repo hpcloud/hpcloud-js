@@ -11,18 +11,18 @@ This has been developed on Node.js only.
 Authenticating with a username and password:
 
 ```javascript
-var IdentityServices = require('hpcloud').IdentityServices;
+var IdentityServices = require('hpcloud-js').IdentityServices;
 
 var username = 'me';
 var password = 'secret';
-var tenantId = 12345
+var tenantId = 12345;
 var endpoint = 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0';
 
 var idService = new IdentityServices(endpoint);
+idService.setTenantId(tenantId);
 
-idService.authenticateAsUser(username, password, tenantId, function (success, identity) {
-  console.log(identity.token());
+idService.authenticateAsUser(username, password, function (err, identity) {
+  if (err) { console.error(err); }
+  else { console.log(identity.token()); }
 });
 ```
-
-
