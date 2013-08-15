@@ -1,7 +1,7 @@
 # HPCloud-JS: A JavaScript library for working with HP Cloud services
 
 This library provides JavaScript bindings for HP Cloud. API-wise, it is
-similar to [HPCloud-PHP](http://hpcloud.github.com/hpcloud-php), but
+similar to [HPCloud-PHP](http://hpcloud.github.io/HPCloud-PHP), but
 with asynchronous methods.
 
 This has been developed on Node.js only.
