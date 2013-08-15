@@ -3,9 +3,9 @@
   "description": "HP Cloud services",
   "keywords": ["cloud", "hpcloud", "object storage", "compute", "openstack", "swift"],
   "version": "1.0.0",
-  "author": "Matt Butcher <matthew.butcher@hp.com>",
+  "author": "Matt Butcher <technosophos@gmail.com>",
   "contributors": [
-    {"name": "Matt Butcher", "email": "matthew.butcher@hp.com"},
+    {"name": "Matt Butcher", "email": "technosophos@gmail.com"},
     {"name": "Matt Farina", "email": "matthew.farina@hp.com"}
   ],
   "repository": "git://github.com/HPCloud/HPCloud-JS",
