@@ -1,5 +1,7 @@
 # HPCloud-JS: A JavaScript library for working with HP Cloud services
 
+_Note, this library is now deprecated and has been superseded by [pkgcloud](https://github.com/pkgcloud/pkgcloud)._
+
 This library provides JavaScript bindings for HP Cloud. API-wise, it is
 similar to [HPCloud-PHP](http://hpcloud.github.io/HPCloud-PHP), but
 with asynchronous methods.
